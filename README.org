@@ -1,0 +1,9 @@
+# git clone uncommon-machine to home
+git clone https://github.com/uncommon-lamb/uncommon-machine.git ~/uncommon-machine
+cd ~/uncommon-machine
+./uncommon-setup
+
+# uncommon-start # start with overlay and enter
+# uncommon-start-remote # start with overlay and expra
+# uncommon-start-simple # start simply for testing
+
