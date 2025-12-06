@@ -7,57 +7,36 @@
 
   set -e  # Exit on error
 
-  echo "=== Container Environment Setup ==="
-  whoami
 
-  # SYSTEM UPDATE
-  echo ""
-  echo "--- Update/Upgrade package lists ---"
-  apt-get update
-  apt-get upgrade
-  echo "✓ Updated"
 
-  # INSTALL GUIX
+ herd restart guix-daemon                        # restart daemon
+ herd status guix-daemon                        # check daemon is running
+ guix pull                                      # make sure pull is working again
 
-  #guix installer dependencies
-  #&&& yes|
-  yes | apt-get install \
-	  wget  \
-          curl \
-          git \
-          build-essential \
-          ca-certificates \
-          gnupg \
-          xz-utils
 
-  # Download Guix binary installer
-  cd /tmp
-  wget https://guix.gnu.org/install.sh -O /tmp/guix-install.sh
-  chmod +x guix-install.sh
-  # Run Guix installer
-  # Note: This installs to /gnu/store and /var/guix
-  ./guix-install.sh
-  ## &&& yes|
+
+
+#### after guix image
 
   guix install glibc-locales
   export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
 
   # Add Guix to PATH
-  echo 'export PATH="/root/.config/guix/current/bin:$PATH"' >> /root/.bashrc
-  echo 'export GUIX_PROFILE="/root/.guix-profile"' >> /root/.bashrc
-  echo 'source "$GUIX_PROFILE/etc/profile"' >> /root/.bashrc
+# echo 'export PATH="/root/.config/guix/current/bin:$PATH"' >> /root/.bashrc
+# echo 'export GUIX_PROFILE="/root/.guix-profile"' >> /root/.bashrc
+# echo 'source "$GUIX_PROFILE/etc/profile"' >> /root/.bashrc
   # Source for current session
-  export PATH="/root/.config/guix/current/bin:$PATH"
-  export GUIX_PROFILE="/root/.guix-profile"
-  if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
-      source "$GUIX_PROFILE/etc/profile"
-  fi
+# export PATH="/root/.config/guix/current/bin:$PATH"
+# export GUIX_PROFILE="/root/.guix-profile"
+# if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
+#     source "$GUIX_PROFILE/etc/profile"
+# fi
 
   # cleanup
-  rm -f /tmp/guix-install.sh
+# rm -f /tmp/guix-install.sh
 
-  #&&& update?
-  guix pull
+# #&&& update?
+# guix pull
 
   echo "✓ Guix"
 

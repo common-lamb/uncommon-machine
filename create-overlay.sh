@@ -6,5 +6,10 @@
   echo "create ol"
   # 10 Gibyte
   apptainer overlay create --fakeroot --size 10240 uncommon-overlay.img
-  echo "run installer for ol"
-  apptainer exec --fakeroot --contain --overlay uncommon-overlay.img os.sif bash install-to-overlay.sh
+
+echo "run installer for ol"
+apptainer exec --fakeroot --overlay uncommon-overlay.img os.sif sh install-to-overlay_I.sh
+echo "not run installer for ol"
+#apptainer exec --fakeroot --overlay uncommon-overlay.img os.sif sh install-to-overlay_II.sh
+
+
