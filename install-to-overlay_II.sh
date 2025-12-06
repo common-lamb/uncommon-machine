@@ -7,53 +7,21 @@
 
   set -e  # Exit on error
 
+   # DOTFILES
+   apk add git stow openssh
+   git clone git@github.com:uncommon-lamb/uncommon-dotfiles.git ~/.uncommon-dotfiles
+   # stowman
+   mkdir -p ~/.local/bin/
+   curl -L \
+        https://raw.githubusercontent.com/ad-on-is/stowman/refs/heads/main/stowman.sh \
+        > ~/.local/bin/stowman
+   chmod +x ~/.local/bin/stowman
 
-
- herd restart guix-daemon                        # restart daemon
- herd status guix-daemon                        # check daemon is running
- guix pull                                      # make sure pull is working again
-
-
-
-
-#### after guix image
-
-  guix install glibc-locales
-  export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
-
-  # Add Guix to PATH
-# echo 'export PATH="/root/.config/guix/current/bin:$PATH"' >> /root/.bashrc
-# echo 'export GUIX_PROFILE="/root/.guix-profile"' >> /root/.bashrc
-# echo 'source "$GUIX_PROFILE/etc/profile"' >> /root/.bashrc
-  # Source for current session
-# export PATH="/root/.config/guix/current/bin:$PATH"
-# export GUIX_PROFILE="/root/.guix-profile"
-# if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
-#     source "$GUIX_PROFILE/etc/profile"
-# fi
-
-  # cleanup
-# rm -f /tmp/guix-install.sh
-
-# #&&& update?
-# guix pull
-
-  echo "✓ Guix"
-
-  # # DOTFILES
-  # guix install git stow
-  # git clone uncommon-lamb/dotfiles ~
-  # cd ~/dotfiles
-  # git checkout uncommmon-machine
-  # # stowman &&&
-  # curl -L \
-  #      https://raw.githubusercontent.com/ad-on-is/stowman/refs/heads/main/stowman.sh \
-  #      > ~/.local/bin/stowman
-  # chmod +x ~/.local/bin/stowman
+  echo "✓ Dotfiles"
 
   # # INSTALL shl
   # guix install sbcl rlwrap
-  # cd ~/dotfiles
+  # cd ~/.uncommon-dotfiles
   # stow shl
   # echo "✓ shl"
 

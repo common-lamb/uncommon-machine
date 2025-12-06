@@ -1,4 +1,3 @@
   #!/bin/bash
   bash ./check-apptainer.sh
-  bash ./pull-base.sh
   bash ./create-overlay.sh
