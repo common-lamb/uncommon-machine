@@ -1,0 +1,6 @@
+#!/bin/bash
+
+#bash check-apptainer.sh
+#bash os-pull.sh
+bash create-image.sh
+#bash os-clean.sh

@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # check fakeroot allowed
-is_root=$(apptainer exec --fakeroot docker://alpine whoami)
-if [ "${is_root}" == "root" ]; then
-	echo "you have root in apptainer"
+rootp=$(apptainer exec --fakeroot docker://alpine whoami)
+if [ "${rootp}" == "root" ]; then
+	echo "You have root in apptainer"
 
 else
-	echo "root required in apptainer"
+	echo "FATAL: Root required in apptainer"
+	echo "In the image(attempt), whoami returns: ${rootp}"
 	exit 1
 fi
 

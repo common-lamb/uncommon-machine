@@ -1,29 +1,22 @@
 #!/bin/bash
 
-  #
-  # Container Setup Script - Run INSIDE the Apptainer container with --fakeroot 
-  # Purpose: Install dotfiles, Guix, SBCL, shl, lish, lem, StumpWM 
-  #
+#
+# Container Setup Script - Run INSIDE the Apptainer container with --fakeroot 
+# Purpose: Install dotfiles, Guix, SBCL, shl, lish, lem, StumpWM 
+#
 
-  set -e # Exit on error
+set -e # Exit on error
 
-  echo "=== Container Environment Setup ===" 
-  whoami
+echo "=== Container Environment Setup ===" 
+whoami
 
-  # SYSTEM UPDATE
-  echo "" 
-  echo "--- Update/Upgrade package lists ---" 
+# SYSTEM UPDATE
+echo "" 
+echo "--- Update/Upgrade package lists ---" 
 
-
-
-#export DEBIAN_FRONTEND=noninteractive
-#export TZ=Etc/UTC
-
-
-  #apk update 
-  #apk upgrade 
-  #apk add bash
-  #echo "✓ Updated"
+apt update 
+apt upgrade 
+echo "✓ Updated"
 
 ## INSTALL GUIX
 #apk add guix
@@ -65,5 +58,5 @@
 ## cleanup
 #rm -f /tmp/guix-install.sh
 
-echo "✓ Guix"
+#echo "✓ Guix"
 

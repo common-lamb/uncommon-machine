@@ -1,0 +1,4 @@
+#!/bin/bash
+
+apptainer shell --overlay ol.img os.sif
+#apptainer shell --fakeroot --overlay ol.img os.sif
