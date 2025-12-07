@@ -10,7 +10,7 @@
  echo "create sandbox in ${TMPDIR}"
  # &&& remove sandbox but need recursive permissions opened first
  chmod -R u+rwX /tmp/${user}/uncommon-machine
- apptainer build --force --fakeroot --sandbox /tmp/${user}/uncommon-machine docker://alpine
+ apptainer build --force --fakeroot --sandbox /tmp/${user}/uncommon-machine docker://jas4711/debian-with-guix:stable
  yes | apptainer cache clean
 
  # create and run shell with overlay
@@ -24,13 +24,12 @@
  echo "run installer I for overlay"
  apptainer exec --fakeroot --overlay uncommon-overlay.img \
 	 /tmp/${user}/uncommon-machine \
-	 sh ./install-to-overlay_I.sh
-         # sh in alpine just this once
+	 bash ./install-to-overlay_I.sh
 
- echo "run installer II for overlay"
- apptainer exec --fakeroot --overlay uncommon-overlay.img \
-	 /tmp/${user}/uncommon-machine \
-	 bash ./install-to-overlay_II.sh
+ echo "not run installer II for overlay"
+ #apptainer exec --fakeroot --overlay uncommon-overlay.img \
+	 #/tmp/${user}/uncommon-machine \
+	 #bash ./install-to-overlay_II.sh
 
  #creat sif from sandbox
  apptainer build uncommon-machine.sif /tmp/${user}/uncommon-machine

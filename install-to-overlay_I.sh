@@ -7,7 +7,8 @@
 
   set -e # Exit on error
 
-  echo "=== Container Environment Setup ===" whoami
+  echo "=== Container Environment Setup ===" 
+  whoami
 
   # SYSTEM UPDATE
   echo "" 
@@ -19,10 +20,10 @@
 #export TZ=Etc/UTC
 
 
-  apk update 
-  apk upgrade 
-  apk add bash
-  echo "✓ Updated"
+  #apk update 
+  #apk upgrade 
+  #apk add bash
+  #echo "✓ Updated"
 
 ## INSTALL GUIX
 #apk add guix
@@ -64,5 +65,5 @@
 ## cleanup
 #rm -f /tmp/guix-install.sh
 
-#echo "✓ Guix"
+echo "✓ Guix"
 
