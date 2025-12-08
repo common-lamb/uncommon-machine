@@ -1,4 +1,4 @@
 #!/bin/bash
 
-apptainer shell --overlay ol.img os.sif
-#apptainer shell --fakeroot --overlay ol.img os.sif
+#apptainer shell --overlay ol.img os.sif
+apptainer shell --fakeroot --containall --no-home --overlay ol.img os.sif
