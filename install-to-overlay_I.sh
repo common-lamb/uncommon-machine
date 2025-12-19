@@ -16,8 +16,6 @@ apt update
 apt upgrade 
 echo "✓ Updated"
 
-# setup GUIX
-
 # worked, basic description
 #guix describe 
 
@@ -42,29 +40,9 @@ export PATH="${HOME}/.config/guix/current/bin:$PATH"
 
 hello
 #=>Hello, world!
+
 # get up-to-date packages and security updates.
 guix pull
 guix package -u 
 
-echo "✓ Guix pulled &&&"
-
-echo "early exit"
-exit 0
-
-# we need to logout-login for the remaining guix install steps 
-# go to install II
-# for now I have brought all guix here
-
-guix install glibc-locales
-export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
-
-# Source for current session
-export GUIX_PROFILE="${HOME}/.guix-profile"
-if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
-    source "$GUIX_PROFILE/etc/profile"
-fi
-
-export PATH="${HOME}/.config/guix/current/bin:$PATH"
-
-echo "✓ Guix"
-
+echo "✓ Guix pulled"
