@@ -1,4 +1,6 @@
 #!/bin/bash
 
-#apptainer shell --overlay ol.img os.sif
-apptainer shell --fakeroot --containall --no-home --overlay ol.img os.sif
+apptainer shell \
+	--fakeroot --containall --no-home --no-mount bind-paths \
+	--bind /dev \
+	--overlay ol.img os.sif

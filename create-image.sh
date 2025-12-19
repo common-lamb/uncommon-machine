@@ -3,14 +3,13 @@
 echo "create overlay"
 rm -f ol.img
 # 1024:1G 10240:10G
-apptainer overlay create --fakeroot --size 1024 ol.img
-# &&& add to os.sif?
+apptainer overlay create --fakeroot --size 10240 ol.img
 
 echo "run installer I for overlay"
-#apptainer exec  --fakeroot --overlay ol.img os.sif bash ./install-to-overlay_i.sh
-cat install-to-overlay_I.sh | apptainer exec --fakeroot --containall --no-home --overlay ol.img os.sif bash 
-
-# --contain --bind $(pwd)
+cat install-to-overlay_I.sh | apptainer exec \
+	--fakeroot --containall --no-home --no-mount bind-paths \
+	--bind /dev \
+	--overlay ol.img os.sif bash 
 
 #echo "run installer II"
 #apptainer exec --fakeroot --overlay ol.img os.sif bash ./install-to-overlay_II.sh
