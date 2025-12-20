@@ -1,9 +1,6 @@
 #!/bin/bash
 
-#
-# Container Setup Script - Run INSIDE the Apptainer container with --fakeroot 
-# Purpose: Install dotfiles, Guix, SBCL, shl, lish, lem, StumpWM 
-#
+# Purpose: Install Guix
 
 set -e # Exit on error
 
