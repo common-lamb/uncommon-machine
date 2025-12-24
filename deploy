@@ -2,5 +2,5 @@
 
 #bash check-apptainer.sh
 #bash os-pull.sh
-bash create-image.sh
+bash create-overlay.sh
 #bash os-clean.sh

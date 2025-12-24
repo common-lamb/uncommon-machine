@@ -3,5 +3,5 @@
 # we bind /dev to ensure /dev/full exists during install
 apptainer shell \
 	--fakeroot --containall --no-home --no-mount bind-paths \
-	--bind /dev \
+	--bind /dev:/dev \
 	--overlay ol.img os.sif
