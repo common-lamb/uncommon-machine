@@ -9,8 +9,6 @@ source ~/.bashrc
 
 DATE=$(date -I)
 
-: << 'BLOCK'
-
 # CERTIFICATES 
 # ===========
 
@@ -209,9 +207,6 @@ ssh -v ${user}@${hostname}
 EOF
 
 echo "✓ SSH key pair"
-
-BLOCK
-# &&& multi line block end
 
 # password store 
 guix install pass-age nvi
