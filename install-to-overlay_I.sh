@@ -39,6 +39,8 @@ if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
 fi
 
 #set env for locales
+guix install --fallback glibc-locales
+
 export GUIX_LOCPATH=$GUIX_PROFILE/lib/locale
 
 # export PATH="${HOME}/.config/guix/current/bin:$PATH"

@@ -50,9 +50,6 @@ if [[ -f "$GUIX_PROFILE/etc/profile" ]]; then
     source "$GUIX_PROFILE/etc/profile"
 fi
 
-#should reattempt, often fails &&&
-#guix install glibc-locales
-
 EOF
 
 echo "✓ Guix"
