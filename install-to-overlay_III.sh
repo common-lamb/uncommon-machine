@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Purpose: Install dotfiles and secrets management
+# Purpose: Install dotfiles encryption and secrets management
 
 set -e # Exit on error
 
@@ -8,6 +8,9 @@ set -e # Exit on error
 source ~/.bashrc
 
 DATE=$(date -I)
+
+: << 'DONE'
+DONE
 
 # CERTIFICATES 
 # ===========
@@ -56,16 +59,19 @@ git clone https://github.com/uncommon-lamb/uncommon-dotfiles.git ~/.uncommon-dot
 echo "see TODO: maybe set dotfiles to ssh access"
 cat << EOF >> ~/TODO
 
-maybe set dotfiles to ssh access
+* maybe set dotfiles to ssh access
 if pushing changes
+replace : https://github.com/common-lamb/uncommon-dotfiles.git
+
+cd ~/.uncommon-dotfiles
+git remote set-url origin git@github.com:common-lamb/uncommon-dotfiles.git
+
+ensure ssh key is correct or added
+
 ensure ssh access is working
+  ssh -T git@github.com
 
-cd ~/.uncommon-dotfiles/git
-vim config
-
-git@github.com:common-lamb/uncommon-dotfiles.git
-replaces
-https://github.com/common-lamb/uncommon-dotfiles.git
+# git push -u origin main
 
 EOF
 
@@ -102,10 +108,11 @@ age --encrypt --passphrase --armor \
 
 # import
 echo "importing the exported age key"
+touch ${key_dir}/age-key-imported.txt
+chmod 600 ${key_dir}/age-key-imported.txt
 age --decrypt \
 	-o ${key_dir}/age-key-imported.txt \
 	${export_dir}/age-key_*.txt.age
-chmod 600 ${key_dir}/age-key-imported.txt
 creation_date=$( \
 	cat ${key_dir}/age-key-imported.txt \
 	| grep "created" \
@@ -117,7 +124,7 @@ mv ${key_dir}/age-key-imported.txt ${key_dir}/age-key_${creation_date}.txt
 echo "see TODO: rsync age key to this machine"
 cat << EOF >> ~/TODO
 
-rsync copy age key to this machine
+* rsync copy age key to this machine
 execute on this machine to copy an age key 
 
 rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt ~/${key_dir}/age-key_<DATE>.txt 
@@ -152,13 +159,16 @@ cat << EOF >> ~/.bashrc
 
 if [ -z "\$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
     eval "\$(ssh-agent -s)" # set shell environment variables 
-    echo "ssh key password required"
+    # no noise at login time!
+    # echo "ssh key password required"
     ssh-add ~/.ssh/id_${DATE} 
 fi
 
 EOF
 
 # export
+touch ~/.ssh/config
+chmod 600 ~/.ssh/config
 cat << EOF >> ~/.ssh/config
 
 Host github.com
@@ -171,7 +181,7 @@ EOF
 echo "see TODO: github sshkey activation"
 cat << EOF >> ~/TODO
 
-github sshkey activation
+* github sshkey activation
  To add the key to your GitHub account:
    - copy the public key at ~/.ssh/id_<DATE>.pub
    - ensure ~/.ssh/config IdentityFile matches the file chosen
@@ -194,7 +204,7 @@ hostname=$(hostname)
 echo "see TODO: passwordless login with remote sshkey"
 cat << EOF >> ~/TODO
 
-passwordless login with remote sshkey
+* passwordless login with remote sshkey
 execute on another machine to send an ssh key to this machine
 
 # send public key
@@ -216,6 +226,7 @@ guix install pass-age nvi
 mkdir -p $HOME/.passage/store
 touch $HOME/.passage/identities
 chmod 600 $HOME/.passage/identities
+
 KEY=$HOME/.age-key/age-key_${DATE}.txt
 echo "this password will protect the passage store"
 age --passphrase --armor $KEY > $HOME/.passage/identities
@@ -233,7 +244,7 @@ passage generate api/openrouter
 echo "see TODO: correct example passage keys"
 cat << 'EOF' >> ~/TODO
 
-correct example passage keys
+* correct example passage keys
 passage # list all 
 passage edit each/password
 passage insert new/password

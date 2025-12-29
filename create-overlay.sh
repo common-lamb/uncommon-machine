@@ -17,12 +17,18 @@
 	#--bind /dev \
 	#--overlay ol.img os.sif bash 
 
-echo "run installer III"
-cat install-to-overlay_III.sh | apptainer exec \
+#echo "run installer III"
+#cat install-to-overlay_III.sh | apptainer exec \
+	#--fakeroot --containall --no-home --no-mount bind-paths \
+	#--bind /dev \
+	#--overlay ol.img os.sif bash 
+	
+echo "run installer IIII"
+cat install-to-overlay_IIII.sh | apptainer exec \
 	--fakeroot --containall --no-home --no-mount bind-paths \
 	--bind /dev \
 	--overlay ol.img os.sif bash 
-	
+
 #echo "create sif from overlay"
 #apptainer build uncommon-machine.sif "${sandbox}"
 
