@@ -1,0 +1,16 @@
+## guix install passt runc podman
+
+# build stage and precursors if needed or modified
+podman build --target stageNN --tag stage:NN .
+
+# run locally
+podman --runtime $(which crun) run --rm -it stage:NN /bin/bash
+
+# tag and push to docker hub
+podman tag stage:NN docker.io/username/myapp:latest
+podman docker login
+podman push docker.io/username/myapp:latest
+
+#run remote
+apptainer pull docker://username/myapp:latest
+apptainer run &&&
