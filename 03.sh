@@ -1,10 +1,11 @@
-#!/bin/bash
-
-# Purpose: Install dotfiles encryption and secrets management
+#!/usr/bin/env bash
 
 set -e # Exit on error
 
-# apptainer shell does not source .profile or .bashrc
+echo "in 03.sh"
+echo "Purpose: dotfiles encryption and secrets management"
+
+# container does not source .profile or .bashrc
 source ~/.bashrc
 
 DATE=$(date -I)
@@ -12,10 +13,10 @@ DATE=$(date -I)
 : << 'DONE'
 DONE
 
-# CERTIFICATES 
+# CERTIFICATES
 # ===========
 
-guix install nss-certs 
+guix install nss-certs
 
 export SSL_CERT_DIR="$HOME/.guix-profile/etc/ssl/certs"
 export SSL_CERT_FILE="$HOME/.guix-profile/etc/ssl/certs/ca-certificates.crt"
@@ -38,7 +39,7 @@ echo "✓ Certificates"
 
 guix install vim git stow curl
 
-mkdir -p ~/.local/bin/ 
+mkdir -p ~/.local/bin/
 export PATH="$HOME/.local/bin/:$PATH"
 
 cat << 'EOF' >> ~/.bashrc
@@ -91,7 +92,7 @@ if [ -f ${key_dir}/age-key_${DATE}.txt ] ; then
 	echo "the key already exists"
 else
 	echo "creating a new age key"
-	mkdir -p "$key_dir" 
+	mkdir -p "$key_dir"
 	chmod 700 "$key_dir"
 	age-keygen -o ${key_dir}/age-key_${DATE}.txt
 	chmod 600 ${key_dir}/age-key_${DATE}.txt
@@ -125,9 +126,9 @@ echo "see TODO: rsync age key to this machine"
 cat << EOF >> ~/TODO
 
 * rsync copy age key to this machine
-execute on this machine to copy an age key 
+execute on this machine to copy an age key
 
-rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt ~/${key_dir}/age-key_<DATE>.txt 
+rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt ~/${key_dir}/age-key_<DATE>.txt
 chmod 600 ~/${key_dir}/age-key_<DATE>.txt
 # test: expect public key is output
 age-keygen -y ~/${key_dir}/age-key_<DATE>.txt
@@ -147,7 +148,7 @@ if [ -f ~/.ssh/id_${DATE} ]; then
 	echo "the key already exists"
 else
 	echo "this password will protect the ssh key"
-	ssh-keygen -t ed25519 -C "${DATE}" -f ~/.ssh/id_${DATE} 
+	ssh-keygen -t ed25519 -C "${DATE}" -f ~/.ssh/id_${DATE}
 	chmod 600 ~/.ssh/id_${DATE}*
 fi
 
@@ -158,10 +159,10 @@ ssh-add ~/.ssh/id_${DATE}
 cat << EOF >> ~/.bashrc
 
 if [ -z "\$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
-    eval "\$(ssh-agent -s)" # set shell environment variables 
+    eval "\$(ssh-agent -s)" # set shell environment variables
     # no noise at login time!
     # echo "ssh key password required"
-    ssh-add ~/.ssh/id_${DATE} 
+    ssh-add ~/.ssh/id_${DATE}
 fi
 
 EOF
@@ -218,7 +219,7 @@ EOF
 
 echo "✓ SSH key pair"
 
-# password store 
+# password store
 guix install pass-age nvi
 
 # new
@@ -245,13 +246,13 @@ echo "see TODO: correct example passage keys"
 cat << 'EOF' >> ~/TODO
 
 * correct example passage keys
-passage # list all 
+passage # list all
 passage edit each/password
 passage insert new/password
 
 EOF
 
-# export 
+# export
 cd ~/.passage/store
 echo .age-recipients >> .gitignore
 git config --global init.defaultBranch main

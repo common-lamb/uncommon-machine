@@ -1,10 +1,11 @@
-#!/bin/bash
-
-# Purpose: install emacs, emacs supporting packages, spacemacs
+#!/usr/bin/env bash
 
 set -e # Exit on error
 
-# apptainer shell does not source .profile or .bashrc
+echo "in 04.sh"
+echo "Purpose: install emacs, emacs supporting packages, spacemacs"
+
+# container does not source .profile or .bashrc
 source ~/.bashrc
 
 DATE=$(date -I)
@@ -12,28 +13,28 @@ DATE=$(date -I)
 : << 'DONE'
 DONE
 
-# emacs 
+# emacs
 # =====
 
-# this is broken
-# guix install --keep-going --fallback emacs 
-# emacs-age emacs-passage emacs-guix emacs-slime 
+guix install emacs
+# emacs-age emacs-passage emacs-guix emacs-slime
 #
-#this is broken too
 # apt install emacs
 
 echo "✓ Emacs"
 
-# spacemacs 
+: << 'BLOCK'
+
+# spacemacs
 # =========
 
-# fonts 
-guix install fontconfig font-adobe-source-code-pro font-fira-code 
+# fonts
+guix install fontconfig font-adobe-source-code-pro font-fira-code
 # refresh font cache
-fc-cache -fv 
+fc-cache -fv
 
 #dependencies
-guix install git tar ripgrep 
+guix install git tar ripgrep
 # make way for the new install
 [ -d $HOME/.emacs.d ] && mv $HOME/.emacs.d $HOME/.emacs.d.bak
 [ -f $HOME/.emacs ] && mv $HOME/.emacs $HOME/.emacs.bak
@@ -44,7 +45,6 @@ cd ~/.emacs.d
 git checkout develop
 
 
-: << 'BLOCK'
 
 # dotfile
 cd ~/.uncommon-dotfiles
@@ -52,13 +52,13 @@ stow spacemacs
 # spacemacs # first start will bootstrap
 
 # &&& plan
-# 
+#
 # run IIII without stow to generate default dotfile
 # shell in and do first run
-# generate default dotfile  
-# add 
+# generate default dotfile
+# add
 # mod
-# push 
+# push
 # run IIII with stow
 # check mod is in place
 #

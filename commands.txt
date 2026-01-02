@@ -1,10 +1,17 @@
 ## guix install passt runc podman
 
 # build stage and precursors if needed or modified
-podman build --target stageNN --tag stage:NN .
+podman  build --target stageNN --tag stage:NN .
+--runtime $(which crun) # finds guix crun
+--cap-add=SYS_ADMIN
+--cap-add=NET_ADMIN
+--security-opt seccomp=unconfined
+
+podman --runtime $(which crun) build --security-opt seccomp=unconfined --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --target stageNN --tag stage:NN .
 
 # run locally
 podman --runtime $(which crun) run --rm -it stage:NN /bin/bash
+run --privileged
 
 # tag and push to docker hub
 podman tag stage:NN docker.io/username/myapp:latest
