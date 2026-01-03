@@ -3,8 +3,23 @@
 set -e # Exit on error
 
 echo "in 05.sh"
-echo "Purpose: workflows"
+echo "Purpose: terminal and backgrounds"
 
-guix install screen conda gwl btop python R
+# container does not source .profile or .bashrc
+source ~/.bashrc
 
-conda init
+#install term, compositor, backgrounder
+guix install kitty picom feh
+
+# fresh dots
+cd ~/.uncommon-dotfiles
+git fetch
+git pull
+
+# dotfiles
+cd ~/.uncommon-dotfiles
+stow kitty
+stow feh
+stow background
+
+echo "✓ terminal"

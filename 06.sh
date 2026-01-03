@@ -1,14 +1,22 @@
-
 #!/usr/bin/env bash
 
 set -e # Exit on error
 
 echo "in 05.sh"
-echo "Purpose: terminal"
+echo "Purpose: workflows, disposable environments, data languages and containters,"
 
-guix install kitty picom feh
+# container does not source .profile or .bashrc
+source ~/.bashrc
 
-cd ~/.uncommon-dotfiles
-stow kitty
-stow feh
-stow background
+guix install screen gwl btop
+echo "✓ workflows"
+
+guix install conda
+conda init
+echo "✓ conda"
+
+guix install python r
+echo "✓ data langs"
+
+guix install passt runc podman singularity
+echo "✓ containers"
