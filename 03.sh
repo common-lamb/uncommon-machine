@@ -61,14 +61,14 @@ cat << EOF >> ~/TODO
 
 * TODO maybe set dotfiles to ssh access
 
-# if pushing changes
-cd ~/.uncommon-dotfiles
-git remote set-url origin git@github.com:common-lamb/uncommon-dotfiles.git
-
-# ensure ssh key is correct or added
+# ensure ssh key is created, correct and added
 
 # ensure ssh access is working
 ssh -T git@github.com
+
+# if pushing changes
+cd ~/.uncommon-dotfiles
+git remote set-url origin git@github.com:common-lamb/uncommon-dotfiles.git
 
 EOF
 
@@ -85,23 +85,48 @@ export_dir="${HOME}/age-key-exported"
 
 # new
 if [ -f ${key_dir}/age-key_${DATE}.txt ] ; then
-	echo "the key already exists"
+	  echo "the key already exists"
 else
-	echo "creating a new age key"
-	mkdir -p "$key_dir"
-	chmod 700 "$key_dir"
-	age-keygen -o ${key_dir}/age-key_${DATE}.txt
-	chmod 600 ${key_dir}/age-key_${DATE}.txt
+	  echo "creating a new age key"
+	  mkdir -p "$key_dir"
+	  chmod 700 "$key_dir"
+	  age-keygen -o ${key_dir}/age-key_${DATE}.txt
+	  chmod 600 ${key_dir}/age-key_${DATE}.txt
 fi
 
-# export
-echo "see TODO: maybe export the new age key"
-cat << EOF >> ~/TODO
+echo "see TODO: replace the example age key"
+cat << 'EOF' >> ~/TODO
 
-* TODO maybe export the new age key
+* TODO replace the example age key
+
+DATE=$(date -I)
+key_dir="${HOME}/.age-key"
+export_dir="${HOME}/age-key-exported"
+
+if [ -f ${key_dir}/age-key_${DATE}.txt ] ; then
+	  echo "the key already exists"
+else
+	  echo "creating a new age key"
+	  mkdir -p "$key_dir"
+	  chmod 700 "$key_dir"
+	  age-keygen -o ${key_dir}/age-key_${DATE}.txt
+	  chmod 600 ${key_dir}/age-key_${DATE}.txt
+fi
+
+EOF
+# export
+echo "see TODO: maybe encrypt and export the new age key"
+cat << 'EOF' >> ~/TODO
+
+* TODO maybe encrypt and export the new age key
+
+DATE=<DATE> # from ~/.age-key/age-key_DATE.txt
+key_dir="${HOME}/.age-key"
+export_dir="${HOME}/age-key-exported"
 
 mkdir -p "$export_dir"
 chmod 700 "$export_dir"
+
 echo "this password will encrypt the exported key"
 age --encrypt --passphrase --armor \
 	  -o ${export_dir}/age-key_${DATE}.txt.age \
@@ -111,24 +136,35 @@ EOF
 
 # import
 echo "see TODO: rsync an age key to this machine"
-cat << EOF >> ~/TODO
+cat << 'EOF' >> ~/TODO
 
 * TODO rsync an age key to this machine
 
+DATE=<X> # from ~/.age-key/age-key_DATE.txt on remote
+remote_key_dir= <X>  # from ${HOME}/.age-key on remote
+remote_user=<X> # from whoami
+remote_host=<X> # from hostname
+
+local_key_dir_local="${HOME}/.age-key"
+
 # execute on this machine to copy an age key
-rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt \
-           ~/${key_dir}/age-key_<DATE>.txt
-chmod 600 ~/${key_dir}/age-key_<DATE>.txt
+rsync -avz ${remote-user}@${remote-host}:${remote_key_dir}/age-key_${DATE}.txt \
+           ${local_key_dir}/age-key_${DATE}.txt
+chmod 600 ${local_key_dir}/age-key_${DATE}.txt
 
 # test: expect public key is output
-age-keygen -y ~/${key_dir}/age-key_<DATE>.txt
+age-keygen -y ${local_key_dir}/age-key_${DATE}.txt
 
 EOF
 
-echo "see TODO: maybe import an encrypted age key"
-cat << EOF >> ~/TODO
+echo "see TODO: maybe decrypt and import a local encrypted age key"
+cat << 'EOF' >> ~/TODO
 
-* TODO maybe import an encrypted age key
+* TODO maybe decrypt and import a local encrypted age key
+
+DATE=<X> # from ~/.age-key/age-key_DATE.txt
+key_dir="${HOME}/.age-key"
+export_dir="${HOME}/age-key-exported"
 
 #decrypt
 touch ${key_dir}/age-key-imported.txt
@@ -136,16 +172,16 @@ chmod 600 ${key_dir}/age-key-imported.txt
 echo "age key decryption password required"
 age --decrypt \
 	  -o ${key_dir}/age-key-imported.txt \
-	  ${export_dir}/age-key_<DATE>.txt.age
+	  ${export_dir}/age-key_${DATE}.txt.age
 
 # extract date and rename
 creation_date=$( \
 	               cat ${key_dir}/age-key-imported.txt \
 	                   | grep "created" \
 	                   | sed s:"# created\: ":: \
-	                   | sed s:T[0-9,:]*Z:: \
-             )
-mv ${key_dir}/age-key-imported.txt ${key_dir}/age-key_${creation_date}.txt
+	                       | sed s:T[0-9,:]*Z:: \
+    )
+     mv ${key_dir}/age-key-imported.txt ${key_dir}/age-key_${creation_date}.txt
 
 EOF
 
@@ -161,9 +197,10 @@ cat << 'EOF' >> ~/TODO
 
 * TODO create an ssh key
 
+DATE=$(date -I)
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
-DATE=$(date -I)
+
 if [ -f ~/.ssh/id_${DATE} ]; then
 	echo "the key already exists"
 else
@@ -180,18 +217,17 @@ chmod 700 ~/.ssh
 touch ~/.ssh/config
 chmod 600 ~/.ssh/config
 
-cat << EOF >> ~/.ssh/config
+cat << 'EOF' >> ~/.ssh/config
 
 Host github.com
     User git
     HostName github.com
-    IdentityFile ~/.ssh/id_<DATE>
+    IdentityFile ~/.ssh/id_DATE
 
 EOF
 
 cat << 'EOF' >> ~/.bashrc
 
-# &&& edit DATE before use
 load_ssh_key() {
     if [ -z "$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
         eval "$(ssh-agent -s)" # set shell environment variables
@@ -208,52 +244,56 @@ cat << 'EOF' >> ~/TODO
 * TODO edit ssh key dates in configs
 
 # extract date
-&&& extract date from ~/.ssh/id_${DATE}
+DATE=$(ls -1 ~/.ssh/id_*.pub | grep -Eo [0-9]+-[0-9]+-[0-9]+)
 
 # in ~/.bashrc at load_ssh_key function
-&&& sed  replace ssh-add ~/.ssh/id_DATE
+file=~/.bashrc
+sed -i s:\~/.ssh/id_DATE:\~/.ssh/id_${DATE}:g $file
 
-# in ~/.ssh/config
-&&& sed replace IdentityFile ~/.ssh/id_<DATE>
+# in ~/.ssh/config at IdentityFile
+file=~/.ssh/config
+sed -i s:\~/.ssh/id_DATE:\~/.ssh/id_${DATE}:g $file
 
 EOF
 
 echo "see TODO: github sshkey activation"
-cat << EOF >> ~/TODO
+cat << 'EOF' >> ~/TODO
 
-* TODO github sshkey activation
- To add the key to your GitHub account:
+* TODO github ssh key activation
+
+# public key:
+DATE=$(ls -1 ~/.ssh/id_*.pub | grep -Eo [0-9]+-[0-9]+-[0-9]+)
+cat ~/.ssh/id_${DATE}.pub
+
+- Add the key to your GitHub account:
    - copy the public key at ~/.ssh/id_<DATE>.pub
    - ensure ~/.ssh/config IdentityFile matches the file chosen
-   - Go to GitHub Settings > SSH and GPG keys
-   - Click "New SSH key"
-   - Paste your public key
+   - Go to GitHub > Settings > SSH and GPG keys
+   - Click: "New SSH key"
+   - Paste the public key
    - Title with date from comment
 
-test connection with:
-  ssh -T git@github.com
-
-public key:
-cat ~/.ssh/id_<DATE>.pub
+#test connection with:
+ssh -T git@github.com
 
 EOF
 
 # import
-echo "see TODO: passwordless login with remote sshkey"
-cat << EOF >> ~/TODO
+echo "see TODO: remote login with sshkey"
+cat << 'EOF' >> ~/TODO
 
-* TODO passwordless login with remote sshkey
+* TODO remote login with sshkey
 
 # execute on this machine
 user=$(whoami)
 hostname=$(hostname)
+echo ${user}@${hostname}
 
-# execute on another machine to send an ssh key to this machine
-# send public key
+# execute on another machine to send the ssh public key
 ssh-copy-id -n -i ~/.ssh/id_<DATE>.pub <USER>@<HOSTNAME>
 # if good remove -n dryrun
 
-# test connection
+# test connection from remote
 ssh -v <USER>@<HOSTNAME>
 
 EOF
@@ -285,13 +325,14 @@ passage generate api/anthropic
 passage generate api/openrouter
 # &&& spoof all keys needed by dotfiles
 
-echo "see TODO: correct example passage keys"
+echo "see TODO: replace example passage keys"
 cat << 'EOF' >> ~/TODO
 
-* TODO correct example passage keys
-passage # list all
-passage edit each/password
-passage insert new/password
+* TODO replace example passage keys
+
+passage # list all/passwords
+passage edit each/password # replace examples
+passage insert new/password # add any
 
 EOF
 
@@ -310,15 +351,17 @@ cat << 'EOF' >> ~/TODO
 
 * TODO maybe push passage to repository
 
-# if it doesnt exist, create a private repo
+# create a private repository
 # collect username and privatereponame
+USERNAME=<USERNAME>
+PRIVATEREPONAME=<PRIVATEREPONAME>
 
 # ensure ssh access works
 ssh -T git@github.com
 
 # push
 cd ~/.passage/store
-git remote add origin git@github.com:<USERNAME>/<PRIVATEREPONAME>
+git remote add origin git@github.com:${USERNAME}/${PRIVATEREPONAME}
 git push -u origin main
 
 EOF
@@ -329,15 +372,17 @@ cat << 'EOF' >> ~/TODO
 
 * TODO maybe pull passage store from repository
 
-# a private repo passage store exists
+# a private repository containing a passage store exists
 # collect username and privatereponame
+USERNAME=<USERNAME>
+PRIVATEREPONAME=<PRIVATEREPONAME>
 
 # ensure ssh access works
 ssh -T git@github.com
 
 # pull
 cd ~/.passage/store
-git remote add origin git@github.com:<USERNAME>/<PRIVATEREPONAME>
+git remote add origin git@github.com:${USERNAME}/${PRIVATEREPONAME}
 git fetch origin
 git reset --hard origin main
 
