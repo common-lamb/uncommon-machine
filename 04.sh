@@ -16,10 +16,7 @@ DONE
 # emacs
 # =====
 
-guix install emacs
-# emacs-age emacs-passage emacs-guix emacs-slime
-#
-# apt install emacs
+guix install emacs emacs-age emacs-passage emacs-guix emacs-slime
 
 echo "✓ Emacs"
 
@@ -53,6 +50,7 @@ stow spacemacs
 
 # &&& plan
 #
+# check 03.sh results thouroughly
 # run IIII without stow to generate default dotfile
 # shell in and do first run
 # generate default dotfile

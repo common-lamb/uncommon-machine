@@ -59,7 +59,7 @@ git clone https://github.com/uncommon-lamb/uncommon-dotfiles.git ~/.uncommon-dot
 echo "see TODO: maybe set dotfiles to ssh access"
 cat << EOF >> ~/TODO
 
-* maybe set dotfiles to ssh access
+* TODO maybe set dotfiles to ssh access
 
 # if pushing changes
 cd ~/.uncommon-dotfiles
@@ -98,7 +98,7 @@ fi
 echo "see TODO: maybe export the new age key"
 cat << EOF >> ~/TODO
 
-* maybe export the new age key
+* TODO maybe export the new age key
 
 mkdir -p "$export_dir"
 chmod 700 "$export_dir"
@@ -113,7 +113,7 @@ EOF
 echo "see TODO: rsync an age key to this machine"
 cat << EOF >> ~/TODO
 
-* rsync an age key to this machine
+* TODO rsync an age key to this machine
 
 # execute on this machine to copy an age key
 rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt \
@@ -128,7 +128,7 @@ EOF
 echo "see TODO: maybe import an encrypted age key"
 cat << EOF >> ~/TODO
 
-* maybe import an encrypted age key
+* TODO maybe import an encrypted age key
 
 #decrypt
 touch ${key_dir}/age-key-imported.txt
@@ -159,7 +159,7 @@ guix install openssh
 echo "see TODO: create an ssh key"
 cat << 'EOF' >> ~/TODO
 
-* create an ssh key
+* TODO create an ssh key
 
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
@@ -189,14 +189,14 @@ Host github.com
 
 EOF
 
-cat << EOF >> ~/.bashrc
+cat << 'EOF' >> ~/.bashrc
 
+# &&& edit DATE before use
 load_ssh_key() {
-    if [ -z "\$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
-        eval "\$(ssh-agent -s)" # set shell environment variables
+    if [ -z "$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
+        eval "$(ssh-agent -s)" # set shell environment variables
         echo "ssh key password required"
-        # &&& edit me before use
-        ssh-add ~/.ssh/id_<DATE>
+        ssh-add ~/.ssh/id_DATE
     fi
 }
 
@@ -205,23 +205,23 @@ EOF
 echo "see TODO: edit ssh key dates in configs"
 cat << 'EOF' >> ~/TODO
 
-* edit ssh key dates in configs
+* TODO edit ssh key dates in configs
 
 # extract date
 &&& extract date from ~/.ssh/id_${DATE}
 
-# in bashrc load_ssh_key function
-&&& sed  replace line ssh-add ~/.ssh/id_<DATE>
+# in ~/.bashrc at load_ssh_key function
+&&& sed  replace ssh-add ~/.ssh/id_DATE
 
 # in ~/.ssh/config
-&&& sed replace line IdentityFile ~/.ssh/id_<DATE>
+&&& sed replace IdentityFile ~/.ssh/id_<DATE>
 
 EOF
 
 echo "see TODO: github sshkey activation"
 cat << EOF >> ~/TODO
 
-* github sshkey activation
+* TODO github sshkey activation
  To add the key to your GitHub account:
    - copy the public key at ~/.ssh/id_<DATE>.pub
    - ensure ~/.ssh/config IdentityFile matches the file chosen
@@ -242,7 +242,7 @@ EOF
 echo "see TODO: passwordless login with remote sshkey"
 cat << EOF >> ~/TODO
 
-* passwordless login with remote sshkey
+* TODO passwordless login with remote sshkey
 
 # execute on this machine
 user=$(whoami)
@@ -288,7 +288,7 @@ passage generate api/openrouter
 echo "see TODO: correct example passage keys"
 cat << 'EOF' >> ~/TODO
 
-* correct example passage keys
+* TODO correct example passage keys
 passage # list all
 passage edit each/password
 passage insert new/password
@@ -308,7 +308,7 @@ git commit -m "first commit during setup: ${DATE}"
 echo "see TODO: maybe push passage store to repository"
 cat << 'EOF' >> ~/TODO
 
-* maybe push passage to repository
+* TODO maybe push passage to repository
 
 # if it doesnt exist, create a private repo
 # collect username and privatereponame
@@ -327,7 +327,7 @@ EOF
 echo "see TODO: maybe pull passage store from repository"
 cat << 'EOF' >> ~/TODO
 
-* maybe pull passage store from repository
+* TODO maybe pull passage store from repository
 
 # a private repo passage store exists
 # collect username and privatereponame
