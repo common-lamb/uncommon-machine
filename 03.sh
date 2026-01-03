@@ -54,25 +54,21 @@ curl -L https://raw.githubusercontent.com/ad-on-is/stowman/refs/heads/main/stowm
 chmod +x ~/.local/bin/stowman.sh
 
 # dotfiles
-rm -rf ~/.uncommon-dotfiles
 git clone https://github.com/uncommon-lamb/uncommon-dotfiles.git ~/.uncommon-dotfiles
 
 echo "see TODO: maybe set dotfiles to ssh access"
 cat << EOF >> ~/TODO
 
 * maybe set dotfiles to ssh access
-if pushing changes
-replace : https://github.com/common-lamb/uncommon-dotfiles.git
 
+# if pushing changes
 cd ~/.uncommon-dotfiles
 git remote set-url origin git@github.com:common-lamb/uncommon-dotfiles.git
 
-ensure ssh key is correct or added
+# ensure ssh key is correct or added
 
-ensure ssh access is working
-  ssh -T git@github.com
-
-# git push -u origin main
+# ensure ssh access is working
+ssh -T git@github.com
 
 EOF
 
@@ -99,39 +95,57 @@ else
 fi
 
 # export
-echo "exporting the new age key"
-mkdir -p "$export_dir"
-chmod 700 "$export_dir"
-echo "this password will protect the exported key"
-age --encrypt --passphrase --armor \
-	-o ${export_dir}/age-key_${DATE}.txt.age \
-	${key_dir}/age-key_${DATE}.txt
-
-# import
-echo "importing the exported age key"
-touch ${key_dir}/age-key-imported.txt
-chmod 600 ${key_dir}/age-key-imported.txt
-age --decrypt \
-	-o ${key_dir}/age-key-imported.txt \
-	${export_dir}/age-key_*.txt.age
-creation_date=$( \
-	cat ${key_dir}/age-key-imported.txt \
-	| grep "created" \
-	| sed s:"# created\: ":: \
-	| sed s:T[0-9,:]*Z:: \
-)
-mv ${key_dir}/age-key-imported.txt ${key_dir}/age-key_${creation_date}.txt
-
-echo "see TODO: rsync age key to this machine"
+echo "see TODO: maybe export the new age key"
 cat << EOF >> ~/TODO
 
-* rsync copy age key to this machine
-execute on this machine to copy an age key
+* maybe export the new age key
 
-rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt ~/${key_dir}/age-key_<DATE>.txt
+mkdir -p "$export_dir"
+chmod 700 "$export_dir"
+echo "this password will encrypt the exported key"
+age --encrypt --passphrase --armor \
+	  -o ${export_dir}/age-key_${DATE}.txt.age \
+	  ${key_dir}/age-key_${DATE}.txt
+
+EOF
+
+# import
+echo "see TODO: rsync an age key to this machine"
+cat << EOF >> ~/TODO
+
+* rsync an age key to this machine
+
+# execute on this machine to copy an age key
+rsync -avz <remote-user>@<remote-host>:~/${key_dir}/age-key_<DATE>.txt \
+           ~/${key_dir}/age-key_<DATE>.txt
 chmod 600 ~/${key_dir}/age-key_<DATE>.txt
+
 # test: expect public key is output
 age-keygen -y ~/${key_dir}/age-key_<DATE>.txt
+
+EOF
+
+echo "see TODO: maybe import an encrypted age key"
+cat << EOF >> ~/TODO
+
+* maybe import an encrypted age key
+
+#decrypt
+touch ${key_dir}/age-key-imported.txt
+chmod 600 ${key_dir}/age-key-imported.txt
+echo "age key decryption password required"
+age --decrypt \
+	  -o ${key_dir}/age-key-imported.txt \
+	  ${export_dir}/age-key_<DATE>.txt.age
+
+# extract date and rename
+creation_date=$( \
+	               cat ${key_dir}/age-key-imported.txt \
+	                   | grep "created" \
+	                   | sed s:"# created\: ":: \
+	                   | sed s:T[0-9,:]*Z:: \
+             )
+mv ${key_dir}/age-key-imported.txt ${key_dir}/age-key_${creation_date}.txt
 
 EOF
 
@@ -142,8 +156,14 @@ echo "✓ age key pair"
 guix install openssh
 
 # new
+echo "see TODO: create an ssh key"
+cat << 'EOF' >> ~/TODO
+
+* create an ssh key
+
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
+DATE=$(date -I)
 if [ -f ~/.ssh/id_${DATE} ]; then
 	echo "the key already exists"
 else
@@ -152,30 +172,49 @@ else
 	chmod 600 ~/.ssh/id_${DATE}*
 fi
 
-eval "$(ssh-agent -s)"
-echo "ssh key password required"
-ssh-add ~/.ssh/id_${DATE}
-
-cat << EOF >> ~/.bashrc
-
-if [ -z "\$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
-    eval "\$(ssh-agent -s)" # set shell environment variables
-    # no noise at login time!
-    # echo "ssh key password required"
-    ssh-add ~/.ssh/id_${DATE}
-fi
-
 EOF
 
 # export
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
 touch ~/.ssh/config
 chmod 600 ~/.ssh/config
+
 cat << EOF >> ~/.ssh/config
 
 Host github.com
     User git
     HostName github.com
-    IdentityFile ~/.ssh/id_${DATE}
+    IdentityFile ~/.ssh/id_<DATE>
+
+EOF
+
+cat << EOF >> ~/.bashrc
+
+load_ssh_key() {
+    if [ -z "\$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
+        eval "\$(ssh-agent -s)" # set shell environment variables
+        echo "ssh key password required"
+        # &&& edit me before use
+        ssh-add ~/.ssh/id_<DATE>
+    fi
+}
+
+EOF
+
+echo "see TODO: edit ssh key dates in configs"
+cat << 'EOF' >> ~/TODO
+
+* edit ssh key dates in configs
+
+# extract date
+&&& extract date from ~/.ssh/id_${DATE}
+
+# in bashrc load_ssh_key function
+&&& sed  replace line ssh-add ~/.ssh/id_<DATE>
+
+# in ~/.ssh/config
+&&& sed replace line IdentityFile ~/.ssh/id_<DATE>
 
 EOF
 
@@ -195,25 +234,27 @@ test connection with:
   ssh -T git@github.com
 
 public key:
-$(cat ~/.ssh/id_${DATE}.pub)
+cat ~/.ssh/id_<DATE>.pub
 
 EOF
 
 # import
-user=$(whoami)
-hostname=$(hostname)
 echo "see TODO: passwordless login with remote sshkey"
 cat << EOF >> ~/TODO
 
 * passwordless login with remote sshkey
-execute on another machine to send an ssh key to this machine
 
+# execute on this machine
+user=$(whoami)
+hostname=$(hostname)
+
+# execute on another machine to send an ssh key to this machine
 # send public key
-ssh-copy-id -n -i ~/.ssh/id_<DATE>.pub ${user}@${hostname}
+ssh-copy-id -n -i ~/.ssh/id_<DATE>.pub <USER>@<HOSTNAME>
 # if good remove -n dryrun
 
 # test connection
-ssh -v ${user}@${hostname}
+ssh -v <USER>@<HOSTNAME>
 
 EOF
 
@@ -229,8 +270,10 @@ touch $HOME/.passage/identities
 chmod 600 $HOME/.passage/identities
 
 KEY=$HOME/.age-key/age-key_${DATE}.txt
-echo "this password will protect the passage store"
-age --passphrase --armor $KEY > $HOME/.passage/identities
+#echo "this password will protect the passage store"
+#age --passphrase --armor $KEY > $HOME/.passage/identities
+# no password
+cat ${KEY} > $HOME/.passage/identities
 # just the public key
 age-keygen -y $KEY > $HOME/.passage/store/.age-recipients
 
@@ -265,15 +308,17 @@ git commit -m "first commit during setup: ${DATE}"
 echo "see TODO: maybe push passage store to repository"
 cat << 'EOF' >> ~/TODO
 
-maybe push passage to repository
-if it doesnt exist create a private repo
-collect your username and reponame
-ensure ssh access works
+* maybe push passage to repository
 
+# if it doesnt exist, create a private repo
+# collect username and privatereponame
+
+# ensure ssh access works
 ssh -T git@github.com
 
+# push
 cd ~/.passage/store
-git remote add origin git@github.com:${username}/${privatereponame}
+git remote add origin git@github.com:<USERNAME>/<PRIVATEREPONAME>
 git push -u origin main
 
 EOF
@@ -282,15 +327,17 @@ EOF
 echo "see TODO: maybe pull passage store from repository"
 cat << 'EOF' >> ~/TODO
 
-maybe pull passage store from repository
-a private repo passage store exists
-collect your username and reponame
-ensure ssh access works
+* maybe pull passage store from repository
 
+# a private repo passage store exists
+# collect username and privatereponame
+
+# ensure ssh access works
 ssh -T git@github.com
 
+# pull
 cd ~/.passage/store
-git remote add origin git@github.com:${username}/${privatereponame}
+git remote add origin git@github.com:<USERNAME>/<PRIVATEREPONAME>
 git fetch origin
 git reset --hard origin main
 
