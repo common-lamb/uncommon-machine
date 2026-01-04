@@ -1,16 +1,14 @@
-#!/bin/bash
-
-# Purpose: Install Lisp foundation: SBCL, quicklisp, ultralisp, qlot, shl
+#!/usr/bin/env bash
 
 set -e # Exit on error
 
-# apptainer shell does not source .profile or .bashrc
+echo "in 07.sh"
+echo "Purpose: Lisp foundation: SBCL, quicklisp, ultralisp, qlot, shl"
+
+# container does not source .profile or .bashrc
 source ~/.bashrc
 
-: << 'BLOCK'
-BLOCK
-
-# fresh dots &&&
+# fresh dots
 cd ~/.uncommon-dotfiles
 git fetch
 git pull
@@ -21,29 +19,77 @@ cd ~/.uncommon-dotfiles
 stow sbcl
 echo "✓ lisp"
 
-# ql 
+# ql
 guix install curl
-curl -o /tmp/quick.lisp http://beta.quicklisp.org/quicklisp.lisp 
-sbcl --no-sysinit --no-userinit --load /tmp/quick.lisp --eval '(quicklisp-quickstart:install :path "~/quicklisp")' --eval '(ql:add-to-init-file)' --quit
+curl -o /tmp/quick.lisp http://beta.quicklisp.org/quicklisp.lisp
+yes | sbcl --no-sysinit --no-userinit --load /tmp/quick.lisp --eval '(quicklisp-quickstart:install :path "~/quicklisp")' --eval '(ql:add-to-init-file)' --quit
 echo "✓ quicklisp"
 
 # ul
-sbcl --eval '(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)' --quit 
+sbcl --eval '(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)' --quit
+
+# lower ultralisp priority
+# (ql-dist:all-dists)
+# (ql-dist:preference (first (ql-dist:all-dists))) ;the universal time of setting
+# (ql-dist:preference (second (ql-dist:all-dists)))
+
+# (setf (ql-dist:preference (first (ql-dist:all-dists)))
+#       (get-universal-time))
+
+# (loop with dists = (sort (copy-list (ql-dist:enabled-dists))
+#                          #'>
+#                          :key #'ql-dist:preference)
+#       for dist in dists
+#       do (format t "* ~A (~A)~%"
+#                  (ql-dist:name dist)
+#                  (ql-dist:version dist)))
+
 echo "✓ ultralisp"
 
 # shl
 guix install sbcl rlwrap
-cd ~/.uncommon-dotfiles 
-stow shl 
+cd ~/.uncommon-dotfiles
+stow shl
 echo "✓ shl"
 
+
+ # CFFI
+
+# ;; Ref
+# ;; https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
+# ;; https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
+# ;; https://notabug.org/Ambrevar/dotfiles/src/master/.sbclrc
+# ;; https://www.reddit.com/r/GUIX/comments/10ju937/quicklisp_on_guix/
+
+guix install openssl
+# ls ${HOME}/.guix-profile/lib/ | grep "crypto"
+# expect: libcrypto.so libcrypto.so.3
+
+# some tools look to cffi:*foreign-library-directories*
+# activate sbclrc section setting this
+# which prints: ("/usr/lib/x86_64-linux-gnu/" "/root/.guix-profile/lib/")
+
+# some tools look to LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
+
+# to expose the cffi error
+# evaluate in shl: (ql:quickload :cl+ssl)
+# or
+# manually install qlot
+# cd ~
+# git clone https://github.com/fukamachi/qlot
+# cd qlot
+# echo "NEED TO SOLVE THE CFFI ERROR"
+# scripts/setup.sh
+# echo "SOLVED"
+# scripts/install.sh
+
+echo "✓ CFFI"
+
 # qlot
-installation_path="/usr/local/lib/qlot"
-mkdir -p ${installation_path}/bin
-touch ${installation_path}/bin/qlot
-chmod 755 ${installation_path}/bin/qlot
-ln -sf ${installation_path}/bin/qlot ~/.local/bin/qlot
-# &&& qlot startup options in emacs for M--
-echo "✓ qlot (next)"
-# this has to be the last line of the file, internally it exits when done
+
 curl -L https://qlot.tech/installer | sh
+installation_path="/usr/local/lib/qlot"
+ln -s ${installation_path}/bin/qlot ~/.local/bin/qlot
+# use qlot startup options in emacs dotfile for M--
+echo "✓ qlot"

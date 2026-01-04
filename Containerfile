@@ -23,7 +23,7 @@ FROM stage03 AS stage04
 COPY --chmod=770 04.sh /opt/
 RUN /opt/04.sh
 
-# 05 &&& terminal
+# 05 terminal
 FROM stage04 AS stage05
 COPY --chmod=770 05.sh /opt/
 RUN /opt/05.sh
@@ -33,7 +33,7 @@ FROM stage05 AS stage06
 COPY --chmod=770 06.sh /opt/
 RUN /opt/06.sh
 
-# 07 &&& lisp I
+# 07 lisp I
 FROM stage06 AS stage07
 COPY --chmod=770 07.sh /opt/
 RUN /opt/07.sh
