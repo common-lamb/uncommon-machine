@@ -23,5 +23,5 @@ podman push docker.io/commonlamb/uncommonmachine:latest
 
 # remote run
 
-apptainer pull docker://username/uncommonmachine:latest
-apptainer run &&&
+apptainer pull docker://commonlamb/uncommonmachine:latest
+apptainer run --no-home --fakeroot &&&
