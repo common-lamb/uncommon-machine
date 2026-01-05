@@ -1,66 +1,67 @@
-#!/bin/bash
-
-# Purpose: Install Lisp stack: stumpwm, Lish, lem, nyxt
+#!/usr/bin/env bash
 
 set -e # Exit on error
 
-# apptainer shell does not source .profile or .bashrc
+echo "in 08.sh"
+echo "Purpose: Lisp tools: Lish, lem, nyxt, stumpw"
+
+# container does not source .profile or .bashrc
 source ~/.bashrc
 
-  # # INSTALL STUMPWM
-  # guix install stumpwm xpra cd ~/dotfiles stow stumpwm stow xpra #&&& remote setup 
+# fresh dots
+cd ~/.uncommon-dotfiles
+git fetch
+git pull
 
-  #expra&&&
-  # echo "✓ StumpWM"
+# LISH
+guix install file # for libmagic
+# https://codeberg.org/nibbula/yew/src/branch/master/lish/docs/lish-examples.md
+temp="${HOME}/temp-lish"
+mkdir -p ${temp} && cd ${temp}
+git clone https://github.com/common-lamb/yew.git
+cd yew/lish
+sh ./build.sh
+mv lish ~/.local/bin
+cd ~ && rm -r $temp
+cd ~/.uncommon-dotfiles
+stow lish
 
-  # # NYXT
-  # guix install nyxt nyxt-emacs cd ~/dotfiles stow nyxt echo "✓ Nyxt"
+echo "✓ Lish"
 
-  # # LISH https://codeberg.org/nibbula/yew/src/branch/master/lish/docs/lish-examples.md over work vpn? does not like windows remote access
-  # temp="~/temp-lish" mkdir -p ${temp} && cd ${temp} cd git clone https://codeberg.org/nibbula/yew.git cd yew/lish
+# LEM
+guix install lem
 
-  # # modify vars.lisp search:path-append (defun hide-default-lishrc () (nos:path-append (nos:user-home) ".lishrc")) (defun default-lishrc () 
-  # # (path-append (namestring (user-homedir-pathname)) ".lishrc"))
+git clone https://github.com/fukamachi/.lem ~/.lem
 
-  # sh ./build.sh mv lish ~/.local/bin cd ~/dotfiles stow lish echo "✓ Lish"
+mkdir -p ~/common-lisp && cd ~/common-lisp
+git clone https://github.com/fukamachi/lem-vi-sexp.git
 
-  # # LEM
-  # guix install lem git clone https://github.com/fukamachi/.lem ~/.lem mkdir -p ~/common-lisp && cd ~/common-lisp git clone 
-  # git@github.com:fukamachi/lem-vi-sexp
-  # # cd ~/dotfiles &&& stow lem
-  # echo "✓ Lem"
+# cd ~/.uncommon-dotfiles
+# stow lem
+# &&& pick up and push fukamachi's config
+# &&& remove the clone line activate the stow line
 
-  # # EMACS
-  # guix install emacs &&& spacemacs &&& dotfiles
+echo "✓ Lem"
 
-#######################################
+# NYXT
+# &&& timed out
+# guix install nyxt emacs-nyxt
+# cd ~/.uncommon-dotfiles
+# stow nyxt
 
-  # &&& conda gwl
+# echo "✓ Nyxt"
 
-  # # INSTALL BASE DEPENDENCIES
-  # echo "" echo "--- Installing base dependencies ---" apt-get install -y \
-  #         wget \ curl \ git \ build-essential \ ca-certificates \ gnupg \ xz-utils
+# STUMPWM
 
-  # # INSTALL DEPENDENCIES
-  # echo "" echo "--- Installing dependencies ---" apt-get install -y \
-  #         expra \ emacs \
+# git clone https://github.com/stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
+# git clone https://github.com/goose121/clx-truetype.git ~/quicklisp/local-projects/clx-truetype
+# git clone https://github.com/landakram/stumpwm-prescient ~/quicklisp/local-projects/stumpwm-prescient
 
-  # echo "✓ installed"
+guix install stumpwm font-dejavu cl-dejavu font-awesome fontconfig
 
-  # &&& expra
-  # 
-  # ################################################################################
-  # # Create user password &&&
-  # ################################################################################
+fc-cache -rv
 
-  # echo "" echo "--- Cleaning up ---"
+cd ~/.uncommon-dotfiles
+stow stumpwm
 
-  # apt-get clean rm -rf /var/lib/apt/lists/*
-  # ################################################################################
-  # # SUMMARY
-  # ################################################################################
-
-  # echo "" echo "=== Setup Complete ===" echo "" echo "Installed software:" echo " - GNU Guix: $(guix --version | head -n1 || echo 'Check 
-  # PATH')" echo " - SBCL: $(sbcl --version)" echo " - StumpWM: $(which stumpwm)" echo " - Emacs: $(emacs --version | head -n1)" echo " - Xpra: 
-  # $(xpra --version | head -n1)"
-
+echo "✓ StumpWM"

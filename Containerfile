@@ -38,7 +38,7 @@ FROM stage06 AS stage07
 COPY --chmod=770 07.sh /opt/
 RUN /opt/07.sh
 
-# 08 &&& lisp II
+# 08 lisp II
 FROM stage07 AS stage08
 COPY --chmod=770 08.sh /opt/
 RUN /opt/08.sh
@@ -48,7 +48,16 @@ FROM stage08 AS stage09
 COPY --chmod=770 09.sh /opt/
 RUN /opt/09.sh
 
-# 10 &&& rice
+# 10 &&& data
 FROM stage09 AS stage10
 COPY --chmod=770 10.sh /opt/
 RUN /opt/10.sh
+
+# 11 &&& style
+
+
+
+
+FROM stage00 AS stage00
+COPY --chmod=770 00.sh /opt/
+RUN /opt/00.sh

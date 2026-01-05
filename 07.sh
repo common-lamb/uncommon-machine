@@ -72,6 +72,13 @@ guix install openssl
 # some tools look to LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
 
+cat << 'EOF' >> ~/.bashrc
+
+export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
+
+EOF
+
+
 # to expose the cffi error
 # evaluate in shl: (ql:quickload :cl+ssl)
 # or
