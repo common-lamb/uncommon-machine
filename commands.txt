@@ -18,7 +18,7 @@ podman --runtime $(which crun) run --rm -it stage:NN /bin/bash
 # tag and push to docker hub
 
 podman tag stage:NN docker.io/commonlamb/uncommonmachine:latest
-podman docker login
+podman login --username commonlamb docker.io
 podman push docker.io/commonlamb/uncommonmachine:latest
 
 # remote run
