@@ -43,12 +43,12 @@ FROM stage07 AS stage08
 COPY --chmod=770 08.sh /opt/
 RUN /opt/08.sh
 
-# 09 &&& network
+# 09 network
 FROM stage08 AS stage09
 COPY --chmod=770 09.sh /opt/
 RUN /opt/09.sh
 
-# 10 &&& data
+# 10 data
 FROM stage09 AS stage10
 COPY --chmod=770 10.sh /opt/
 RUN /opt/10.sh

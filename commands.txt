@@ -1,23 +1,27 @@
-## guix install passt runc podman
+## guix install passt crun podman
 
-# build stage and precursors if needed or modified
-podman  build --target stageNN --tag stage:NN .
---runtime $(which crun) # finds guix crun
---cap-add=SYS_ADMIN
---cap-add=NET_ADMIN
---security-opt seccomp=unconfined
+# build stage NN and any needed or modified precursors
+
+# podman  build --target stageNN --tag stage:NN .
+# --runtime $(which crun) # to find guix crun
+# --cap-add=SYS_ADMIN
+# --cap-add=NET_ADMIN
+# --security-opt seccomp=unconfined
 
 podman --runtime $(which crun) build --security-opt seccomp=unconfined --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --target stageNN --tag stage:NN .
 
-# run locally
+# local run tagged stage:NN
+
 podman --runtime $(which crun) run --rm -it stage:NN /bin/bash
-run --privileged
+# run --privileged
 
 # tag and push to docker hub
-podman tag stage:NN docker.io/username/myapp:latest
-podman docker login
-podman push docker.io/username/myapp:latest
 
-#run remote
-apptainer pull docker://username/myapp:latest
+podman tag stage:NN docker.io/commonlamb/uncommonmachine:latest
+podman docker login
+podman push docker.io/commonlamb/uncommonmachine:latest
+
+# remote run
+
+apptainer pull docker://username/uncommonmachine:latest
 apptainer run &&&
