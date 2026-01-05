@@ -65,7 +65,7 @@ git pull --rebase
 EOF
 
 # spacemacs support
-guix install texlive ispell tree-sitter
+guix install ispell tree-sitter
 
 # first start will bootstrap (and approve compilation)
 yes | emacs --daemon
