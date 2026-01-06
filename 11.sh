@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 
 set -e # Exit on error
@@ -61,4 +60,4 @@ echo "✓ graphics"
 guix install neofetch kmonad
 
 # palette
-# lunaria light palette
+# &&& lunaria light palette

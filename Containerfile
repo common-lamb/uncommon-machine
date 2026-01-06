@@ -53,11 +53,13 @@ FROM stage09 AS stage10
 COPY --chmod=770 10.sh /opt/
 RUN /opt/10.sh
 
-
-# 11 &&& graphics
+# 11 graphics
 FROM stage10 AS stage11
 COPY --chmod=770 11.sh /opt/
 RUN /opt/11.sh
+
+
+
 
 # &&& writing
 # guix install texlive

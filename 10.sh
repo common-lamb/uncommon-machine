@@ -20,6 +20,7 @@ guix install borg borgmatic
 echo "✓ redundancy"
 
 guix install rclone syncthing nextcloud-client cryfs
+echo "✓ access"
 
 # # setup
 # rclone config #make new @ db
@@ -29,5 +30,3 @@ guix install rclone syncthing nextcloud-client cryfs
 # rclone mount db:1 ~/db/1 --vfs-cache-mode full &
 # # stop
 # cd ~ && fusermount -u ~/db/1
-
-echo "✓ access"
