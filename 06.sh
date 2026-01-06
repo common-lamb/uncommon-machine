@@ -16,6 +16,9 @@ git pull
 guix install screen gwl btop slurm
 echo "✓ workflows"
 
+guix install duckdb sqlite
+echo "✓ databases"
+
 guix install conda
 # &&& conda init breaks 07.sh at source .bashrc
 #conda init
