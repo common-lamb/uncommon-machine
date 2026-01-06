@@ -51,8 +51,35 @@ um-push() {
 
 # &&& remote run
 
-# um-pull
-#apptainer pull docker://commonlamb/uncommonmachine:latest
+# get container as image
+um-pull() {
+apptainer pull --disable-cache uncommon-machine.sif docker://commonlamb/uncommonmachine:latest
+}
 
-# um-run
-#apptainer run --no-home --fakeroot &&&
+
+# create overlay and run container 
+um-run() {
+
+# ensure overlay
+if [ -f ./overlay.img ]; then
+	echo "no overlay, creating"
+	# 1024 1G
+	apptainer overlay create --fakeroot --size $((1024 * 4)) overlay.img
+fi
+
+# ensure sif 
+[ ! -f ./uncommon-machine.sif ] && echo "use um-pull to pull uncommon-machine.sif" && return 1
+
+# get going
+apptainer shell \
+	--fakeroot --containall --no-home --no-mount bind-paths \
+	--overlay overlay.img uncommon-machine.sif
+
+# optional binds
+	#--bind ${HOME}/quick_access:/mounts/quick_access \
+	
+# previously: bind /dev to ensure /dev/full exists during install
+	#--bind /dev:/dev \
+}
+
+
