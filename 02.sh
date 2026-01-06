@@ -54,4 +54,7 @@ fi
 
 EOF
 
+# guix dependencies
+guix install less
+
 echo "✓ Guix"

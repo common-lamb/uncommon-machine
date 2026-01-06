@@ -11,8 +11,8 @@ apt-get update
 apt-get upgrade
 echo "✓ Updated"
 
-#useful report
-whoami
-pwd
-hostname
-ls
+# useful report
+# whoami
+# pwd
+# hostname
+# ls

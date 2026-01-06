@@ -35,11 +35,10 @@ git clone https://github.com/fukamachi/.lem ~/.lem
 
 mkdir -p ~/common-lisp && cd ~/common-lisp
 git clone https://github.com/fukamachi/lem-vi-sexp.git
-
-# cd ~/.uncommon-dotfiles
-# stow lem
 # &&& pick up and push fukamachi's config
 # &&& remove the clone line activate the stow line
+# cd ~/.uncommon-dotfiles
+# stow lem
 
 echo "✓ Lem"
 
@@ -58,7 +57,7 @@ echo "✓ Lem"
 # git clone https://github.com/landakram/stumpwm-prescient ~/quicklisp/local-projects/stumpwm-prescient
 
 guix install stumpwm font-dejavu cl-dejavu font-awesome fontconfig
-
+# forced refresh font cache
 fc-cache -rv
 
 cd ~/.uncommon-dotfiles

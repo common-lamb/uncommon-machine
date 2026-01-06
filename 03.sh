@@ -10,9 +10,6 @@ source ~/.bashrc
 
 DATE=$(date -I)
 
-: << 'DONE'
-DONE
-
 # CERTIFICATES
 # ===========
 

@@ -8,10 +8,15 @@ echo "Purpose: install emacs, emacs supporting packages, spacemacs"
 # container does not source .profile or .bashrc
 source ~/.bashrc
 
+# fresh dots
+cd ~/.uncommon-dotfiles
+git fetch
+git pull
+
 # emacs
 # =====
 
-guix install emacs emacs-age emacs-passage emacs-guix emacs-slime emacs-langtool emacs-calfw emacs-syncthing emacs-gptel
+guix install emacs emacs-age emacs-passage emacs-guix emacs-slime emacs-langtool emacs-calfw emacs-syncthing emacs-gptel emacs-pdf-tools
 
 # daemon and start client
 cat << 'EOF' >> ~/.bashrc
@@ -34,8 +39,8 @@ echo "✓ Emacs"
 
 # fonts
 guix install fontconfig font-adobe-source-code-pro font-fira-code
-# refresh font cache
-fc-cache -fv
+# forced refresh font cache
+fc-cache -rv
 
 #dependencies
 guix install git tar ripgrep
