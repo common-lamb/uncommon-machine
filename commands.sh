@@ -85,7 +85,7 @@ apptainer shell \
 	#--bind /dev:/dev \
 	#
 # one liner
-# with-slurm apptainer shell --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}/quick_access:/mounts/quick_access --bind /dev:/dev --overlay overlay.img uncommon-machine.sif
+# with-slurm apptainer shell --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}:/mounts/meta-home --bind ${HOME}/quick_access:/mounts/quick_access --bind /dev:/dev --overlay overlay.img uncommon-machine.sif
 	
 }
 
