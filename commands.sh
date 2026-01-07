@@ -55,7 +55,7 @@ um-push() {
 
 # get container as image
 um-pull() {
-apptainer pull --disable-cache uncommon-machine.sif docker://commonlamb/uncommonmachine:latest
+	apptainer pull --disable-cache uncommon-machine.sif docker://commonlamb/uncommonmachine:latest
 }
 
 # create overlay and run container 

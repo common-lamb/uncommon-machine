@@ -1,13 +1,28 @@
+* Uncommon Machine
 
-git clone https://github.com/uncommon-lamb/uncommon-machine.git ~/uncommon-machine
+Reproducible scientific computation environment
+
+provides emacs vim many hpc tools and high performace languages
+
+um-run starts a system with persistence between sessions
+
+* startup
+
+git clone https://github.com/common-lamb/uncommon-machine.git ~/uncommon-machine
 
 cd ~/uncommon-machine
 
-./deploy
+cat commands.sh
 
-# uncommon-start-shell # start with overlay and enter
+source commands.sh
 
-# uncommon-start-remote # start with overlay and expra
+- commands
+  - um-build 11
+  - um-shell 11
+  - um-push 11
+  - um-pull
+  - um-run
 
-# uncommon-start-simple # start simply for testing
+um- build/shell/push require an environment with podman and sudo permissions
 
+um- pull/run require an environment with apptainer, but needs no sudo
