@@ -48,7 +48,7 @@ um-push() {
     podman tag stage:${NN} docker.io/commonlamb/uncommonmachine:latest
     echo "docker hub password required"
     podman login --username commonlamb docker.io
-    podman push docker.io/commonlamb/uncommonmachine:latest
+    podman push --retry 42 docker.io/commonlamb/uncommonmachine:latest
 }
 
 #### remote runs with apptainer ####
