@@ -81,8 +81,12 @@ apptainer shell \
 # optional binds
 	#--bind ${HOME}/quick_access:/mounts/quick_access \
 	
-# previously: bind /dev to ensure /dev/full exists during install
+# optional bind /dev to ensure /dev/full exists during guix installs
 	#--bind /dev:/dev \
+	#
+# one liner
+# with-slurm apptainer shell --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}/quick_access:/mounts/quick_access --bind /dev:/dev --overlay overlay.img uncommon-machine.sif
+	
 }
 
 
