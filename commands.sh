@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-## source this file
-## prerequisites guix install passt crun podman apptainer
+# source this file
 
+#### local image creation ####
+
+# prerequisites guix install passt crun podman apptainer 
 
 # build stage NN and any needed or modified precursors
 um-build() {
@@ -49,19 +51,18 @@ um-push() {
     podman push docker.io/commonlamb/uncommonmachine:latest
 }
 
-# &&& remote run
+#### remote runs with apptainer ####
 
 # get container as image
 um-pull() {
 apptainer pull --disable-cache uncommon-machine.sif docker://commonlamb/uncommonmachine:latest
 }
 
-
 # create overlay and run container 
 um-run() {
 
 # ensure overlay
-if [ -f ./overlay.img ]; then
+if [ ! -f ./overlay.img ]; then
 	echo "no overlay, creating"
 	# 1024 1G
 	apptainer overlay create --fakeroot --size $((1024 * 4)) overlay.img
@@ -69,6 +70,8 @@ fi
 
 # ensure sif 
 [ ! -f ./uncommon-machine.sif ] && echo "use um-pull to pull uncommon-machine.sif" && return 1
+
+echo "source .bashrc # after start"
 
 # get going
 apptainer shell \
