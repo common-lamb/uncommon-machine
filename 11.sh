@@ -63,9 +63,9 @@ guix install neofetch kmonad
 # &&& lunaria light palette
 
 
-# &&& patches move to 12
+# patches &&& move to 12
 
-
+# solves special characters in spacemacs
 cat << 'EOF' >> ~/.bashrc
 
 # set locale and lang
@@ -74,3 +74,16 @@ export LANG=C.UTF-8
 export LANGUAGE=C.UTF-8
 
 EOF
+
+# &&&untested install miniforge
+guix install wget
+
+mkdir ~/temp-conda && cd ~/temp-conda
+wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3.sh -b -p "${HOME}/conda"
+cd ~ && rm -r ~/temp-conda
+
+source "${HOME}/conda/etc/profile.d/conda.sh"
+source "${HOME}/conda/etc/profile.d/mamba.sh"
+
+conda activate
