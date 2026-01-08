@@ -71,21 +71,19 @@ fi
 # ensure sif 
 [ ! -f ./uncommon-machine.sif ] && echo "use um-pull to pull uncommon-machine.sif" && return 1
 
-echo "source .bashrc # after start"
-
-# get going
-apptainer shell \
+# lets fn go 
+apptainer exec \
 	--fakeroot --containall --no-home --no-mount bind-paths \
-	--overlay overlay.img uncommon-machine.sif
-
-# optional binds
-	#--bind ${HOME}/quick_access:/mounts/quick_access \
+	--bind ${HOME}:/mnt/meta-home \
+	--overlay overlay.img \
+	uncommon-machine.sif \
+	bash
 	
-# optional bind /dev to ensure /dev/full exists during guix installs
+# optional bind /dev which ensures /dev/full exists during guix installs
 	#--bind /dev:/dev \
-	#
+	
 # one liner
-# with-slurm apptainer shell --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}:/mounts/meta-home --bind ${HOME}/quick_access:/mounts/quick_access --bind /dev:/dev --overlay overlay.img uncommon-machine.sif
+# with-slurm apptainer exec --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}:/mnt/meta-home --bind /dev:/dev --overlay overlay.img uncommon-machine.sif bash
 	
 }
 
