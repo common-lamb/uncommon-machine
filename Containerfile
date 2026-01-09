@@ -58,15 +58,12 @@ FROM stage10 AS stage11
 COPY --chmod=770 11.sh /opt/
 RUN /opt/11.sh
 
+# 99 patches 
+FROM stage11 AS stage99
+COPY --chmod=770 99.sh /opt/
+RUN /opt/99.sh
 
+# FROM stageN AS stageN
+# COPY --chmod=770 N.sh /opt/
+# RUN /opt/N.sh
 
-
-# &&& writing
-# guix install texlive
-
-
-
-
-FROM stage00 AS stage00
-COPY --chmod=770 00.sh /opt/
-RUN /opt/00.sh

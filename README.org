@@ -17,9 +17,9 @@ cat commands.sh
 source commands.sh
 
 - commands
-  - um-build 11
-  - um-shell 11
-  - um-push 11
+  - um-build 99
+  - um-shell 99
+  - um-push 99
   - um-pull
   - um-run
 
