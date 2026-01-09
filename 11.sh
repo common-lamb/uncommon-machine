@@ -91,8 +91,5 @@ conda activate
 # stumpwm contrib and modules
 mkdir -p ~/.stumpwm.d/contrib
 mkdir -p ~/.stumpwm.d/modules
-git clone https://github.com/stumpwm/stumpwm-contrib ~/.stumpwm.d/contrib 
+git clone https://github.com/stumpwm/stumpwm-contrib ~/.stumpwm.d/contrib
 cd ~/.stumpwm.d/contrib ln -s &&& ../modules/&&&
-
-
-
