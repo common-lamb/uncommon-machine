@@ -4,7 +4,7 @@
 
 #### local image creation ####
 
-# prerequisites guix install passt crun podman apptainer 
+# prerequisites guix install passt crun podman apptainer
 
 # build stage NN and any needed or modified precursors
 um-build() {
@@ -34,8 +34,11 @@ um-shell() {
     [ -z "$1" ] && echo "must supply an NN integer arg" && return 1
     local NN=$1
 
-    podman --runtime $(which crun) run --rm -it stage:${NN} /bin/bash
-    # run --privileged
+    podman --runtime $(which crun) run \
+           --mount type=bind,src=${HOME},dst=/mnt/meta-home/ \
+           --mount type=bind,src=/,dst=/mnt/meta-root/ \
+           --rm -it stage:${NN} \
+           /bin/bash
 }
 
 # tag and push to docker hub
@@ -58,7 +61,7 @@ um-pull() {
 	apptainer pull --disable-cache uncommon-machine.sif docker://commonlamb/uncommonmachine:latest
 }
 
-# create overlay and run container 
+# create overlay and run container
 um-run() {
 
 # ensure overlay
@@ -68,23 +71,22 @@ if [ ! -f ./overlay.img ]; then
 	apptainer overlay create --fakeroot --size $((1024 * 4)) overlay.img
 fi
 
-# ensure sif 
+# ensure sif
 [ ! -f ./uncommon-machine.sif ] && echo "use um-pull to pull uncommon-machine.sif" && return 1
 
-# lets fn go 
+# lets fn go
 apptainer exec \
 	--fakeroot --containall --no-home --no-mount bind-paths \
 	--bind ${HOME}:/mnt/meta-home \
+	--bind /:/mnt/meta-root \
 	--overlay overlay.img \
 	uncommon-machine.sif \
 	bash
-	
+
 # optional bind /dev which ensures /dev/full exists during guix installs
 	#--bind /dev:/dev \
-	
+
 # one liner
-# with-slurm apptainer exec --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}:/mnt/meta-home --bind /dev:/dev --overlay overlay.img uncommon-machine.sif bash
-	
+# with-slurm apptainer exec --fakeroot --containall --no-home --no-mount bind-paths --bind ${HOME}:/mnt/meta-home --bind /:/mnt/meta-root --bind /dev:/dev --overlay overlay.img uncommon-machine.sif bash
+
 }
-
-
