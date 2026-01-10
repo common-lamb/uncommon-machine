@@ -13,6 +13,26 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
+# to: networking
+guix install iputils wget
+
+# to: conda
+# install miniforge
+guix remove conda
+
+mkdir ~/temp-conda && cd ~/temp-conda
+wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3.sh -b -p "${HOME}/conda"
+cd ~ && rm -r ~/temp-conda
+
+source "${HOME}/conda/etc/profile.d/conda.sh"
+source "${HOME}/conda/etc/profile.d/mamba.sh"
+conda init
+
+# to: spacemacs
+# emacs compiled for remote
+guix remove emacs
+guix install emacs-lucid
 
 # solves special characters in spacemacs
 cat << 'EOF' >> ~/.bashrc
@@ -24,43 +44,51 @@ export LANGUAGE=C.UTF-8
 
 EOF
 
-# untested install miniforge
-guix install wget
+# lsp layer uses npm
+apt-get install -y npm
 
-mkdir ~/temp-conda && cd ~/temp-conda
-wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-bash Miniforge3.sh -b -p "${HOME}/conda"
-cd ~ && rm -r ~/temp-conda
+#stop and restart to initialize
+emacsclient -e '(kill-emacs)'
+emacs --daemon
 
-source "${HOME}/conda/etc/profile.d/conda.sh"
-source "${HOME}/conda/etc/profile.d/mamba.sh"
 
-conda activate
+# To: programming languages
+guix install r
 
+
+# to: git
+rm ~/.gitconfig
+cd ~/.uncommon-dotfiles
+stow git
+
+# to: lisp II
+guix install fd libvterm # &&& maybe also libvterm-dev for terminal
+
+# to: lisp II
 # stumpwm contrib and modules
 mkdir -p ~/.stumpwm.d/contrib
 mkdir -p ~/.stumpwm.d/modules
 git clone https://github.com/stumpwm/stumpwm-contrib ~/.stumpwm.d/contrib
-cd ~/.stumpwm.d/contrib ln -s &&& ../modules/&&&
+# &&& symlink nice things from contrib to modules
+# cd ~/.stumpwm.d/contrib ln -s &&& ../modules/&&&
 
-# emacs compiled for remote
-guix install emacs-lucid
 
-# install R
-# activate ESS
 
-#rundle ridge desktop
+
+
+
+# spacemacs buffer.el corrupting
+
+# &&& rundle ridge desktop
 
 # Writing
-  #Citation
-  #Latex, guix install texlive
-  #Mermaid via snap
+#Citation
+#Latex, guix install texlive
+#Mermaid via snap
+# install language tool
 
 #user add
 #user, password
 #copy root home
 
-# lem needs, check if already installed
-# libvterm-dev
-# fd or fd-find
-
+# decoupling:  compute, setup, configuration, secrets, data
