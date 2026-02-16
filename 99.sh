@@ -13,82 +13,137 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
-# to: networking
-guix install iputils wget
+# ======================================
+# 00 base os pull, locale, os update
+# ======================================
+# ======================================
+# 01 guix I test daemon
+# ======================================
+# ======================================
+# 02 guix II, daemon start, dependencies
+# ======================================
+# ======================================
+# 03 security encryption dotfiles secrets
+# ======================================
+# &&& spoof all keys needed by dotfiles
+# ======================================
+# 04 emacs, emacs supporting packages, spacemacs
+# ======================================
 
-# to: conda
-# install miniforge
-guix remove conda
+# &&& spacemacs buffer.el corrupting
+# to change emacs in patches stop and restart to rerun initialization
+# emacsclient -e '(kill-emacs)'
+# emacs --daemon
 
-mkdir ~/temp-conda && cd ~/temp-conda
-wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-bash Miniforge3.sh -b -p "${HOME}/conda"
-cd ~ && rm -r ~/temp-conda
+# ======================================
+# 05 terminal
+# ======================================
+# ======================================
+# 06 workflows, disposable environments, data languages and containers,
+# ======================================
 
-source "${HOME}/conda/etc/profile.d/conda.sh"
-source "${HOME}/conda/etc/profile.d/mamba.sh"
-conda init
+# &&& install apptainer
 
-# to: spacemacs
-# emacs compiled for remote
-guix remove emacs
-guix install emacs-lucid
+# ======================================
+# 07 lisp I, SBCL, quicklisp, ultralisp, ocicl, shl
+# ======================================
 
-# solves special characters in spacemacs
-cat << 'EOF' >> ~/.bashrc
+# &&& lower ultralisp priority
+# (ql-dist:all-dists)
+# (ql-dist:preference (first (ql-dist:all-dists))) ;the universal time of setting
+# (ql-dist:preference (second (ql-dist:all-dists)))
 
-# set locale and lang
-export LC_ALL=C.UTF-8
-export LANG=C.UTF-8
-export LANGUAGE=C.UTF-8
+# (setf (ql-dist:preference (first (ql-dist:all-dists)))
+#       (get-universal-time))
 
-EOF
+# (loop with dists = (sort (copy-list (ql-dist:enabled-dists))
+#                          #'>
+#                          :key #'ql-dist:preference)
+#       for dist in dists
+#       do (format t "* ~A (~A)~%"
+#                  (ql-dist:name dist)
+#                  (ql-dist:version dist)))
 
-# lsp layer uses npm
-apt-get install -y npm
+# &&& Ocicl
+# &&& Ocicl setup
 
-#stop and restart to initialize
-emacsclient -e '(kill-emacs)'
-emacs --daemon
+# ======================================
+# 08 lisp II Lish, lem, nyxt, stumpw
+# ======================================
+
+git clone https://github.com/fukamachi/.lem ~/.lem
+
+mkdir -p ~/common-lisp && cd ~/common-lisp
+git clone https://github.com/fukamachi/lem-vi-sexp.git
+# &&& pick up and push fukamachi's config
+# &&& remove the clone line activate the stow line
+# cd ~/.uncommon-dotfiles
+# stow lem
+
+# &&& nyxt
+# timed out
+# guix install nyxt emacs-nyxt
+# cd ~/.uncommon-dotfiles
+# stow nyxt
 
 
-# To: programming languages
-guix install r
-
-
-# to: git
-rm ~/.gitconfig
-cd ~/.uncommon-dotfiles
-stow git
-
-# to: lisp II
-guix install fd libvterm # &&& maybe also libvterm-dev for terminal
-
-# to: lisp II
-# stumpwm contrib and modules
-mkdir -p ~/.stumpwm.d/contrib
-mkdir -p ~/.stumpwm.d/modules
-git clone https://github.com/stumpwm/stumpwm-contrib ~/.stumpwm.d/contrib
-# &&& symlink nice things from contrib to modules
+# &&& stump
+# symlink nice things from contrib to modules
 # cd ~/.stumpwm.d/contrib ln -s &&& ../modules/&&&
 
+# ======================================
+# 09 network
+# ======================================
 
+# &&& Email
+# https://jf-parent.github.io/blog/2020/01/01/email-from-spacemacs-my-mu4e-org-msg-offlineimap-setup/
 
+# &&& ipfs private network
+# &&& tailscale vpn
 
+# ======================================
+# 10 data storage redundancy and access
+# ======================================
 
+# # setup dropbox
+# rclone config #make new @ db
+# rclone lsd db:
+# mkdir -p ~/db/1
+# # start
+# rclone mount db:1 ~/db/1 --vfs-cache-mode full &
+# # stop
+# cd ~ && fusermount -u ~/db/1
 
-# spacemacs buffer.el corrupting
+# ======================================
+# 11 graphics and styling
+# ======================================
 
+# &&& set XTERM etc
 # &&& rundle ridge desktop
+# &&& lunaria light palette
 
-# Writing
-#Citation
-#Latex, guix install texlive
-#Mermaid via snap
-# install language tool
+# ======================================
+# 12 agents and models
+# ======================================
+
+
+
+
+
+
+
+
+# ======================================
+# &&& Writing
+# ======================================
+# &&& Citation
+# &&& Latex, guix install texlive
+# &&& Mermaid via snap
+# &&& install language tool
 
 #user add
 #user, password
 #copy root home
+
 
 # decoupling:  compute, setup, configuration, secrets, data

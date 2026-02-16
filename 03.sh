@@ -320,7 +320,6 @@ echo "password" | passage insert -e tests/test
 passage generate -n email/gmail 10
 passage generate api/anthropic
 passage generate api/openrouter
-# &&& spoof all keys needed by dotfiles
 
 echo "see TODO: replace example passage keys"
 cat << 'EOF' >> ~/TODO

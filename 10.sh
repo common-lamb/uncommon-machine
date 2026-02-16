@@ -21,12 +21,3 @@ echo "✓ redundancy"
 
 guix install rclone syncthing nextcloud-client cryfs
 echo "✓ access"
-
-# # setup
-# rclone config #make new @ db
-# rclone lsd db:
-# mkdir -p ~/db/1
-# # start
-# rclone mount db:1 ~/db/1 --vfs-cache-mode full &
-# # stop
-# cd ~ && fusermount -u ~/db/1

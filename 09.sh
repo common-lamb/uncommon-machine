@@ -13,6 +13,6 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
-guix install xpra magic-wormhole cloudflare-cli n2n
+guix install xpra magic-wormhole cloudflare-cli n2n iputils wget
 
 echo "✓ network"

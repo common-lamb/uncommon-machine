@@ -39,7 +39,6 @@ xscreensaver-settings
 xscreensaver-command --activate
 # xscreensaver-command --lock #do not use on guix!
 
-
 # screen lock
 
 # on first use, enter password
@@ -47,7 +46,6 @@ xlock
 
 EOF
 
-# &&& set XTERM etc
 
 echo "✓ graphics"
 
@@ -60,4 +58,3 @@ echo "✓ graphics"
 guix install neofetch kmonad
 
 # palette
-# &&& lunaria light palette

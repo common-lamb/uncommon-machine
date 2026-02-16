@@ -16,7 +16,7 @@ git pull
 # emacs
 # =====
 
-guix install emacs emacs-age emacs-passage emacs-guix emacs-slime emacs-langtool emacs-calfw emacs-syncthing emacs-gptel emacs-pdf-tools
+guix install emacs-lucid emacs-age emacs-passage emacs-guix emacs-slime emacs-langtool emacs-calfw emacs-syncthing emacs-gptel emacs-pdf-tools
 
 # daemon and start client
 cat << 'EOF' >> ~/.bashrc
@@ -71,6 +71,8 @@ EOF
 
 # spacemacs support
 guix install ispell tree-sitter
+# lsp layer uses npm
+apt-get install -y npm
 
 # first start will bootstrap (and approve compilation)
 yes | emacs --daemon

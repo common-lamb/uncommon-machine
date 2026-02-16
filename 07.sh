@@ -3,7 +3,7 @@
 set -e # Exit on error
 
 echo "in 07.sh"
-echo "Purpose: Lisp foundation: SBCL, quicklisp, ultralisp, qlot, shl"
+echo "Purpose: Lisp foundation: SBCL, quicklisp, ultralisp, ocicl, shl"
 
 # container does not source .profile or .bashrc
 source ~/.bashrc
@@ -12,6 +12,9 @@ source ~/.bashrc
 cd ~/.uncommon-dotfiles
 git fetch
 git pull
+
+mkdir -p ~/common-lisp/
+mkdir -p ~/repos/
 
 # sbcl
 guix install sbcl
@@ -28,22 +31,6 @@ echo "✓ quicklisp"
 # ul
 sbcl --eval '(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)' --quit
 
-# lower ultralisp priority
-# (ql-dist:all-dists)
-# (ql-dist:preference (first (ql-dist:all-dists))) ;the universal time of setting
-# (ql-dist:preference (second (ql-dist:all-dists)))
-
-# (setf (ql-dist:preference (first (ql-dist:all-dists)))
-#       (get-universal-time))
-
-# (loop with dists = (sort (copy-list (ql-dist:enabled-dists))
-#                          #'>
-#                          :key #'ql-dist:preference)
-#       for dist in dists
-#       do (format t "* ~A (~A)~%"
-#                  (ql-dist:name dist)
-#                  (ql-dist:version dist)))
-
 echo "✓ ultralisp"
 
 # shl
@@ -52,8 +39,7 @@ cd ~/.uncommon-dotfiles
 stow shl
 echo "✓ shl"
 
-
- # CFFI
+# CFFI
 
 # ;; Ref
 # ;; https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
@@ -78,7 +64,6 @@ export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
 
 EOF
 
-
 # to expose the cffi error
 # evaluate in shl: (ql:quickload :cl+ssl)
 # or
@@ -95,8 +80,10 @@ echo "✓ CFFI"
 
 # qlot
 
-curl -L https://qlot.tech/installer | sh
-installation_path="/usr/local/lib/qlot"
-ln -s ${installation_path}/bin/qlot ~/.local/bin/qlot
-# use qlot startup options in emacs dotfile for M--
-echo "✓ qlot"
+# curl -L https://qlot.tech/installer | sh
+# installation_path="/usr/local/lib/qlot"
+# ln -s ${installation_path}/bin/qlot ~/.local/bin/qlot
+# # use qlot startup options in emacs dotfile for M--
+# echo "✓ qlot"
+
+# ocicl

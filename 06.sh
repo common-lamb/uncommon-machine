@@ -13,20 +13,30 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
+# gitconfig
+rm ~/.gitconfig
+cd ~/.uncommon-dotfiles
+stow git
+
 guix install screen gwl btop slurm
 echo "✓ workflows"
 
 guix install duckdb sqlite
 echo "✓ databases"
 
-guix install conda
-# &&& conda init breaks 07.sh at source .bashrc
-#conda init
+# install miniforge
+mkdir ~/temp-conda && cd ~/temp-conda
+wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3.sh -b -p "${HOME}/conda"
+cd ~ && rm -r ~/temp-conda
+
+source "${HOME}/conda/etc/profile.d/conda.sh"
+source "${HOME}/conda/etc/profile.d/mamba.sh"
+conda init
 echo "✓ conda"
 
 guix install python r
 echo "✓ data langs"
 
 guix install passt runc podman
-# &&& install apptainer
 echo "✓ containers"
