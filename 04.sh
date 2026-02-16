@@ -13,6 +13,28 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
+# fonts
+
+guix install fontconfig font-adobe-source-code-pro font-fira-code
+# forced refresh font cache
+fc-cache -rv
+
+# set locale and lang
+# solves special characters in spacemacs
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export LANGUAGE=C.UTF-8
+
+cat << 'EOF' >> ~/.bashrc
+
+# set locale and lang
+# solves special characters in spacemacs
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export LANGUAGE=C.UTF-8
+
+EOF
+
 # emacs
 # =====
 
@@ -36,11 +58,6 @@ echo "✓ Emacs"
 
 # spacemacs
 # =========
-
-# fonts
-guix install fontconfig font-adobe-source-code-pro font-fira-code
-# forced refresh font cache
-fc-cache -rv
 
 #dependencies
 guix install git tar ripgrep

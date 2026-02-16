@@ -13,10 +13,10 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
-# gitconfig
-rm ~/.gitconfig
+rm -f ~/.gitconfig
 cd ~/.uncommon-dotfiles
 stow git
+echo "✓ git"
 
 guix install screen gwl btop slurm
 echo "✓ workflows"

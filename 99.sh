@@ -14,32 +14,34 @@ git fetch
 git pull
 
 # ======================================
-# 00 base os pull, locale, os update
+# 00 base os pull, os update
 # ======================================
 # ======================================
-# 01 guix I test daemon
+# 01 guix I test daemon, pull
 # ======================================
 # ======================================
-# 02 guix II, daemon start, dependencies
+# 02 guix II, start daemon
 # ======================================
 # ======================================
 # 03 security encryption dotfiles secrets
 # ======================================
+
 # &&& spoof all keys needed by dotfiles
+
 # ======================================
-# 04 emacs, emacs supporting packages, spacemacs
+# 04 emacs, locale, emacs supporting packages, spacemacs
 # ======================================
 
 # &&& spacemacs buffer.el corrupting
 # to change emacs in patches stop and restart to rerun initialization
 # emacsclient -e '(kill-emacs)'
-# emacs --daemon
+# yes | emacs --daemon
 
 # ======================================
 # 05 terminal
 # ======================================
 # ======================================
-# 06 workflows, disposable environments, data languages and containers,
+# 06 git, workflows, disposable environments, data languages and containers,
 # ======================================
 
 # &&& install apptainer
