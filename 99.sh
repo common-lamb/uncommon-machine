@@ -125,11 +125,152 @@ git clone https://github.com/fukamachi/lem-vi-sexp.git
 # 12 agents and models
 # ======================================
 
+llama_port="8080"
+lem_mcp_port="7890"
+cl_mcp_port="12345"
+hf_model="ggml-org/gpt-oss-20b-GGUF"
+
+cat >> ~/.sbclrc << EOF
+
+;;; cl-mcp server startup configuration
+(asdf:load-system :cl-mcp)
+
+(defun serve-cl-mcp ()
+  "Start the cl-mcp TCP server"
+  (cl-mcp:start-tcp-server-thread :port (uiop:getenv "cl_mcp_port"))
+  (format t "~%cl-mcp server started on (uiop:getenv "cl_mcp_port")~%")
+  (force-output))
+
+(serve-cl-mcp)
+
+EOF
+
+cat >> ~/.lemrc&&& << EOF
+;; lem-mcp server startup
+(mcp-server-start)
+EOF
+
+# configure open code
+mkdir -p ~/.config/opencode
+cat > ~/.config/opencode/opencode.json << EOF
+{
+  "providers": {
+    "local": {
+      "apiKey": "not-needed",
+      "baseUrl": "http://localhost:${llama_port}/v1",
+      "models": {
+        "gpt-oss-20b": {
+          "id": "gpt-oss-20b",
+          "name": "GPT-OSS 20B",
+          "maxTokens": 128000,
+          "contextWindow": 128000
+        }
+      }
+    }
+  },
+  "agents": {
+    "coder": {
+      "model": "local/gpt-oss-20b",
+      "maxTokens": 8192
+    }
+  }
+}
+EOF
+
+cat > ~/.config/opencode/mcp/cl-lisp.json << 'EOF'
+
+{
+  "name": "cl-lisp",
+  "transport": "stdio",
+  "command": "python3",
+  "args": [
+    "~/quicklisp/local-projects/cl-mcp/scripts/stdio_tcp_bridge.py",
+    "--host", "127.0.0.1",
+    "--port", "12345"
+  ]
+}
+
+EOF
+
+cat > ~/.config/opencode/mcp/lem.json << 'EOF'
+
+{
+  "name": "lem",
+  "transport": "http",
+  "url": "http://localhost:7890/mcp"
+}
+
+EOF
 
 
 
+# AGENTS.md
+# PROJECT INSTRUCTIONS TEMPLATE
+mkdir -p .opencode
+cat > .opencode/AGENTSTEMPLATE.md << 'EOF'
+# Common Lisp Development Environment
 
+## System Context
+- Running in Podman container
+- SBCL + Quicklisp
+- Lem editor (Common Lisp IDE)
+- Local LLM: llama.cpp serving gpt-oss-20b (Apache 2.0)
+- MCP Servers: Lem (HTTP:7890) + cl-mcp (TCP:12345)
 
+## MCP Tools
+
+### Lem MCP (http://localhost:7890/mcp)
+Direct editor interaction:
+- Read/edit buffers open in Lem
+- Get current file/selection
+- Query editor state
+
+### cl-mcp (TCP:12345)
+Common Lisp operations:
+- **repl-eval**: Evaluate Lisp forms
+- **fs-read-file**: Read files with Lisp-aware collapsing
+- **fs-write-file**: Write files (project root only)
+- **code-find**: Locate symbol definitions
+- **code-describe**: Get symbol documentation
+- **fs-list-directory**: List directory contents
+
+## Workflow
+
+Prefer MCP tools over bash for Lisp operations:
+```
+Good: Use cl-lisp/repl-eval with code: "(+ 1 2 3)"
+Bad:  Bash(sbcl --eval "(+ 1 2 3)")
+```
+
+## Common Lisp Standards
+- Use kebab-case: `my-function-name`
+- 2-space indentation
+- Docstrings for public APIs
+- Package definitions in package.lisp
+
+## Constraints
+- No systemd (container)
+- No sudo access
+- No external network without permission
+- Changes only in project directory
+
+## Project Structure
+```
+project/
+├── project.asd
+├── src/
+│   ├── package.lisp
+│   └── main.lisp
+└── tests/
+    └── tests.lisp
+```
+
+## Common Tasks
+- Load: `(ql:quickload :system)`
+- Test: `(asdf:test-system :system)`
+- Find: Use code-find tool
+- Eval: Use repl-eval tool
+EOF
 
 
 # ======================================
