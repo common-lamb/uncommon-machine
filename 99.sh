@@ -66,9 +66,6 @@ git pull
 #                  (ql-dist:name dist)
 #                  (ql-dist:version dist)))
 
-# &&& Ocicl
-# &&& Ocicl setup
-
 # ======================================
 # 08 lisp II Lish, lem, nyxt, stumpw
 # ======================================

@@ -16,7 +16,7 @@ git pull
 rm -f ~/.gitconfig
 cd ~/.uncommon-dotfiles
 stow git
-echo "✓ git"
+echo "✓ git config"
 
 guix install screen gwl btop slurm
 echo "✓ workflows"
@@ -25,6 +25,7 @@ guix install duckdb sqlite
 echo "✓ databases"
 
 # install miniforge
+guix install wget
 mkdir ~/temp-conda && cd ~/temp-conda
 wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3.sh -b -p "${HOME}/conda"

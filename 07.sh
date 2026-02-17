@@ -30,8 +30,20 @@ echo "✓ quicklisp"
 
 # ul
 sbcl --eval '(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)' --quit
-
 echo "✓ ultralisp"
+
+# ocicl
+temp="~/ocicl-temp"
+mkdir -p ${temp} && cd ${temp}
+git clone https://github.com/ocicl/ocicl.git
+cd ocicl
+sbcl --load setup.lisp
+ocicl setup
+cd ~ && rm -rf ${temp}
+# create a "top level" ocicl dir
+cd ~
+sbcl --eval '(asdf:load-system :str)' --quit
+echo "✓ ocicl"
 
 # shl
 guix install sbcl rlwrap
@@ -55,11 +67,12 @@ guix install openssl
 # activate sbclrc section setting this
 # which prints: ("/usr/lib/x86_64-linux-gnu/" "/root/.guix-profile/lib/")
 
-# some tools look to LD_LIBRARY_PATH
+# some common lisp tools look to LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
 
 cat << 'EOF' >> ~/.bashrc
 
+# some common lisp tools look to LD_LIBRARY_PATH for cffi
 export LD_LIBRARY_PATH=${HOME}/.guix-profile/lib/:$LD_LIBRARY_PATH
 
 EOF
@@ -76,6 +89,7 @@ EOF
 # echo "SOLVED"
 # scripts/install.sh
 
+sbcl --eval '(ql:quickload :cl+ssl)' --quit
 echo "✓ CFFI"
 
 # qlot
@@ -85,5 +99,3 @@ echo "✓ CFFI"
 # ln -s ${installation_path}/bin/qlot ~/.local/bin/qlot
 # # use qlot startup options in emacs dotfile for M--
 # echo "✓ qlot"
-
-# ocicl
