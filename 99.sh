@@ -22,6 +22,40 @@ git pull
 # ======================================
 # 02 guix II, start daemon
 # ======================================
+
+cat << 'EOF' >> ~/.config/guix/channels.scm:
+
+(cons* (channel
+        (name 'guix)
+        (url "https://git.savannah.gnu.org/git/guix.git")
+        (introduction
+          (make-channel-introduction
+            "9edb3f66fd807b096b48283debdcddccfea34bad"
+            (openpgp-fingerprint
+              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+
+       (channel
+        (name 'nonguix)
+        (url "https://gitlab.com/nonguix/nonguix")
+        (introduction
+          (make-channel-introduction
+            "897c1a470da759236cc11798f4e0a5f7d4d59fbc"
+            (openpgp-fingerprint
+              "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
+
+(channel
+ (name 'guix-science)
+          (url "https://codeberg.org/guix-science/guix-science.git")
+          (branch "master")
+          (introduction
+            (make-channel-introduction
+              "b1fe5aaff3ab48e798a4cce02f0212bc91f423dc"
+              (openpgp-fingerprint
+                "CA4F 8CF4 37D7 478F DA05  5FD4 4213 7701 1A37 8446"))))
+
+      %default-channels)
+
+EOF
 # ======================================
 # 03 security encryption dotfiles secrets
 # ======================================
@@ -70,7 +104,10 @@ git pull
 # 08 lisp II Lish, lem, nyxt, stumpw
 # ======================================
 
-# &&& add to dotfiles and push fukamachi's config
+guix remove lem
+curl -L https://lem-project.github.io/linux_installer.sh | bash
+
+# &&& add fukamachi's config to dotfiles
 # git clone https://github.com/fukamachi/.lem ~/.lem
 mkdir -p ~/common-lisp && cd ~/common-lisp
 git clone https://github.com/fukamachi/lem-vi-sexp.git
@@ -122,6 +159,11 @@ stow lem
 # ======================================
 # 12 agents and models
 # ======================================
+
+# Load dependencies from ocicl
+# sbcl --eval '(asdf:load-system :cl-mcp-server)' --quit # what version is this &&&
+
+# &&& todo NVIDIA in conda
 
 # ======================================
 # &&& Writing

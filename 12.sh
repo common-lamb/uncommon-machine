@@ -13,12 +13,18 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
+# SELECT MODEL
+
+# GLM-4.7-Flash
+# hf_model="ggml-org/gpt-oss-20b-GGUF"
+# hf_model="unsloth/Qwen3.5-35B-A3B-GGUF" # top
+hf_model="unsloth/Qwen3.5-2B-GGUF" # small test
+
 # SETUP PARAMS
 
-llama_port="8080"
-cl_mcp_port="8081"
-lem_mcp_port="8082"
-hf_model="unsloth/Qwen3.5-35B-A3B-GGUF"
+llama_port=8080
+cl_mcp_port=3000
+lem_mcp_port=7890
 LLAMA_SERVER_HOST="http://localhost:${llama_port}"
 
 cat << EOF >> ~/.bashrc
@@ -27,8 +33,8 @@ cat << EOF >> ~/.bashrc
 export llama_port=${llama_port}
 export cl_mcp_port=${cl_mcp_port}
 export lem_mcp_port=${lem_mcp_port}
-export hf_model=${hf_model}
 export LLAMA_SERVER_HOST="http://localhost:${llama_port}"
+export hf_model=${hf_model}
 
 EOF
 
@@ -81,67 +87,31 @@ EOF
 
 # MODEL
 
-# GLM-4.7-Flash
-# hf_model="ggml-org/gpt-oss-20b-GGUF"
-# hf_model="unsloth/Qwen3.5-35B-A3B-GGUF"
-
 # download model
-# llama-cli -hf ${hf_model} --version
+echo "downloading: ${hf_model}"
+llama-cli -hf ${hf_model} --version
 # loaded to: ~/.cache/llama.cpp/
-
-# serve-model to download
-llama-server-start
 
 # AGENT
 
 # install Opencode
 curl -fsSL https://opencode.ai/install | bash
+cd ~/.uncommon-dotfiles
+stow opencode
 
 # CL-MCP
 # Clone cl-mcp repository
-# cd ~/common-lisp/
-# git clone https://github.com/cl-ai-project/cl-mcp.git
-# Load dependencies from ocicl
-sbcl --eval '(asdf:load-system :cl-mcp-server)' --quit
-# cl-mcp startup is in sbclrc as (cl-mcp-server-start)
+cd ~/common-lisp/
+git clone https://github.com/cl-ai-project/cl-mcp.git
+
+cd ~
+sbcl --eval '(asdf:load-system :cl-mcp)' --quit
+
+# cl-mcp startup is in lem init as (cl-mcp-server-start)
 
 # LEM-MCP
 # mpc is built in
 # startup is in lemrc as (mcp-server-start)
-
-# configure open code
-mkdir -p ~/.config/opencode
-cat > ~/.config/opencode/opencode.json << EOF
-
-{
-  "$schema": "https://opencode.ai/config.json",
-
-  "provider": {
-    "llamacpp": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "llama-local-server",
-      "options": {
-        "baseURL": "http://localhost:${llama_port}/v1"
-      }
-    }
-  }
-
-  "mcp": {
-    "common-lisp-mcp": {
-      "type": "remote",
-      "url": "https://localhost:${cl_mcp_port}",
-      "enabled": true
-    },
-
-    "lem-editor-mcp": {
-      "type": "remote",
-      "url": "https://localhost:${lem_mcp_port}",
-      "enabled": true
-    }
-  }
-}
-
-EOF
 
 # STARTUP
 
@@ -160,12 +130,15 @@ agents-start() {
     curl -s http://localhost:${llama_port}/health > /dev/null && echo "llama-server ready"
 
     echo ""
-    echo "nav to project"
+    echo "we assume: nav to project"
     echo "start lem: lem"
+    # &&& set lem-mcp pwd
     echo "lem will start sbcl"
-    echo "start opencode: opencode"
+    MCP_PROJECT_ROOT=$(pwd) # &&& set cl-mcp pwd
     echo "run /connect to configure model"
     echo "run /init to create AGENTS.md"
+    echo "starting opencode: opencode"
+    opencode
 }
 
 EOF
