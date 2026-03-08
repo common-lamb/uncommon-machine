@@ -68,7 +68,7 @@ llama-server-start() {
         --jinja
 }
 
-cat << EOF >> ~/.bashrc
+cat << 'EOF' >> ~/.bashrc
 
 llama-server-start() {
     llama-server \
@@ -88,8 +88,7 @@ EOF
 # MODEL
 
 # download model
-echo "downloading: ${hf_model}"
-llama-cli -hf ${hf_model} --version
+# &&& llama-cli -hf ${hf_model} --version
 # loaded to: ~/.cache/llama.cpp/
 
 # AGENT
@@ -115,7 +114,7 @@ sbcl --eval '(asdf:load-system :cl-mcp)' --quit
 
 # STARTUP
 
-cat >> ~/.bashrc << EOF
+cat >> ~/.bashrc << 'EOF'
 
 agents-start() {
 

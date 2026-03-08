@@ -104,13 +104,30 @@ EOF
 # 08 lisp II Lish, lem, nyxt, stumpw
 # ======================================
 
-guix remove lem
-curl -L https://lem-project.github.io/linux_installer.sh | bash
+# guix remove lem
 
-# &&& add fukamachi's config to dotfiles
-# git clone https://github.com/fukamachi/.lem ~/.lem
-mkdir -p ~/common-lisp && cd ~/common-lisp
-git clone https://github.com/fukamachi/lem-vi-sexp.git
+# mkdir -p ~/temp && cd ~/temp
+# # download nightly build
+# curl -o lem.appimage -L https://github.com/lem-project/lem/releases/download/nightly-latest/Lem-x86_64.AppImage
+# # unpack
+# chmod +x lem.appimage
+# ./lem.appimage --appimage-extract
+# mv squashfs-root lem-squashfs
+# # place
+# mkdir -p ~/.local/share/lem/
+# mv lem-squashfs ~/.local/share/lem/
+# # symlink
+# cd ~/.local/share/lem/lem-squashfs/
+# ln -s $(realpath AppRun) ~/.local/bin/lem
+# # cleanup
+# cd ~ && rm -r ~/temp
+# #  test
+# lem --help
+
+# # &&& add fukamachi's config to dotfiles
+# # git clone https://github.com/fukamachi/.lem ~/.lem
+# mkdir -p ~/common-lisp && cd ~/common-lisp
+# git clone https://github.com/fukamachi/lem-vi-sexp.git
 cd ~/.uncommon-dotfiles
 stow lem
 
@@ -176,6 +193,36 @@ stow lem
 #user add
 #user, password
 #copy root home
+
+# guix install sudo
+
+# username=user
+# password=password
+
+# adduser --no-create-home --gecos "" --disabled-password $username
+# echo "${username}:${password}" | chpasswd
+# usermod -aG sudo "${username}"
+
+# touch /etc/sudoers
+# chmod 0440 /etc/sudoers
+
+# cat > /etc/sudoers << EOF
+
+# # allow root to act as sudo NO pw prompt
+# root    ALL=(ALL) NOPASSWD:ALL
+
+# # Allow members of group sudo to execute any command
+# %sudo   ALL=(ALL:ALL) ALL
+
+# # allow user to act as sudo after pw prompt
+# # user    ALL=(ALL) ALL
+
+# EOF
+
+# echo "check"
+# visudo --check
+
+# sudo --list
 
 
 # decoupling:  compute, setup, configuration, secrets, data
