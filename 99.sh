@@ -133,6 +133,7 @@ stow lem
 
 # &&& nyxt
 # timed out
+# apt-get install -y libenchant-2-2
 # guix install nyxt emacs-nyxt
 # cd ~/.uncommon-dotfiles
 # stow nyxt
@@ -180,7 +181,16 @@ stow lem
 # Load dependencies from ocicl
 # sbcl --eval '(asdf:load-system :cl-mcp-server)' --quit # what version is this &&&
 
+
+
+
+
+# lem version with a builtin mcp
+# lem mcp to hermes config.yaml
+
 # &&& todo NVIDIA in conda
+
+# pip install hermes-agent[mcp]
 
 # ======================================
 # &&& Writing

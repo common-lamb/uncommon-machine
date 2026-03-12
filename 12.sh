@@ -13,131 +13,103 @@ cd ~/.uncommon-dotfiles
 git fetch
 git pull
 
-# SELECT MODEL
-
-# GLM-4.7-Flash
-# hf_model="ggml-org/gpt-oss-20b-GGUF"
-# hf_model="unsloth/Qwen3.5-35B-A3B-GGUF" # top
-hf_model="unsloth/Qwen3.5-2B-GGUF" # small test
-
-# SETUP PARAMS
-
-llama_port=8080
+# configure environment
+ollama_port=11434
 cl_mcp_port=3000
 lem_mcp_port=7890
-LLAMA_SERVER_HOST="http://localhost:${llama_port}"
+
+OLLAMAHOST=http://localhost:${ollama_port}
+OLLAMA_CONTEXT_LENGTH=64000
+
+model_name="qwen3.5:0.8b"
+# hf_model="unsloth/Qwen3.5-35B-A3B-GGUF" # top
 
 cat << EOF >> ~/.bashrc
 
 # agent settings
-export llama_port=${llama_port}
+export ollama_port=${ollama_port}
 export cl_mcp_port=${cl_mcp_port}
 export lem_mcp_port=${lem_mcp_port}
-export LLAMA_SERVER_HOST="http://localhost:${llama_port}"
-export hf_model=${hf_model}
+
+exportOLLAMAHOST=${OLLAMAHOST}
+export OLLAMA_CONTEXT_LENGTH=${OLLAMA_CONTEXT_LENGTH}
+
+export model_name=${model_name}
 
 EOF
 
-# INFERENCE SERVER
-guix install llama-cpp
+# install ollama
+curl -fsSL https://ollama.com/install.sh | sh
 
-# -c 131072
-# -c,    --ctx-size N                     size of the prompt context (default: 0, 0 = loaded from model)
-#                                         (env: LLAMA_ARG_CTX_SIZE)
-# -ctk,  --cache-type-k TYPE              KV cache data type for K
-#                                         allowed values: f32, f16, bf16, q8_0, q4_0, q4_1, iq4_nl, q5_0, q5_1
-#                                         (default: f16)
-# -ngl,  --gpu-layers, --n-gpu-layers N   max. number of layers to store in VRAM, either an exact number,
-#                                         'auto', or 'all' (default: auto)
-# -ncmoe, --n-cpu-moe N                   keep the Mixture of Experts (MoE) weights of the first N layers in the
-#                                         CPU
-#                                         (env: LLAMA_ARG_N_CPU_MOE)
-# --threads 32
-# --threads-batch 16
+# dl model
+ollama serve & # start server
+sleep 15
+ollama pull ${model_name}
+# ollama pull hf.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q4_K_M
+# ollama run hf.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q4_K_M
 
-llama-server-start() {
-    llama-server \
-        -hf ${hf_model} \
-        --port ${llama_port} \
-        --ctx-size 0 \
-        --n-cpu-moe 16 \
-        -b 2048 \
-        -ub 2048 \
-        --numa distribute \
-        --parallel 1 \
-        --jinja
-}
-
-cat << 'EOF' >> ~/.bashrc
-
-llama-server-start() {
-    llama-server \
-        -hf ${hf_model} \
-        --port ${llama_port} \
-        --ctx-size 0 \
-        --n-cpu-moe 16 \
-        -b 2048 \
-        -ub 2048 \
-        --numa distribute \
-        --parallel 1 \
-        --jinja
-}
-
-EOF
-
-# MODEL
-
-# download model
-# &&& llama-cli -hf ${hf_model} --version
-# loaded to: ~/.cache/llama.cpp/
-
-# AGENT
-
-# install Opencode
+# # install Opencode
 curl -fsSL https://opencode.ai/install | bash
 cd ~/.uncommon-dotfiles
 stow opencode
+
+# install hermes
+cd ~ && mkdir -p temp && cd temp
+curl -fsSL -o install.sh https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh
+chmod +x install.sh
+./install.sh --skip-setup
+cd ~ && rm -r temp
 
 # CL-MCP
 # Clone cl-mcp repository
 cd ~/common-lisp/
 git clone https://github.com/cl-ai-project/cl-mcp.git
-
 cd ~
 sbcl --eval '(asdf:load-system :cl-mcp)' --quit
-
 # cl-mcp startup is in lem init as (cl-mcp-server-start)
 
 # LEM-MCP
 # mpc is built in
-# startup is in lemrc as (mcp-server-start)
+# startup is in lem init as (mcp-server-start)
+
+# configure opencode
+cd ~/.uncommon-dotfiles
+stow opencode
+
+# configure hermes model
+mkdir -p ~/.hermes
+cat > ~/.hermes/.env << EOF
+
+OPENAI_BASE_URL=http://localhost:${ollama_port}/v1
+OPENAI_API_KEY=any-non-nil-str
+LLM_MODEL=${model_name}
+
+EOF
+
+# configure hermes mcp
+cat > ~/.hermes/config.yaml << EOF
+
+mcp_servers:
+  common_lisp:
+    url: "http://localhost:${cl_mcp_port}/mcp"
+
+EOF
 
 # STARTUP
 
-cat >> ~/.bashrc << 'EOF'
+cat >> ~/.bashrc << EOF
 
 agents-start() {
+    # export MCP_PROJECT_ROOT=\$(pwd) # set cl-mcp pwd
+    ollama serve &
 
-    # Start llama.cpp server
-    if ! curl -s http://localhost:${llama_port}/health > /dev/null; then
-        llama-server-start
-    fi
+}
 
-    # Wait for services
-    sleep 3
-    # Verify llama
-    curl -s http://localhost:${llama_port}/health > /dev/null && echo "llama-server ready"
-
-    echo ""
-    echo "we assume: nav to project"
-    echo "start lem: lem"
-    # &&& set lem-mcp pwd
-    echo "lem will start sbcl"
-    MCP_PROJECT_ROOT=$(pwd) # &&& set cl-mcp pwd
-    echo "run /connect to configure model"
-    echo "run /init to create AGENTS.md"
-    echo "starting opencode: opencode"
-    opencode
+check-mcp() {
+    curl -X POST http://localhost:${cl_mcp_port}/mcp \
+         -H "Content-Type: application-json" \
+         -d '{"jsonrpc":"2.0", "method":"initialize", "params":{}, "id":1}'
+    # -d '{"jsonrpc":"2.0", "method":"tools/list", "params":{}, "id":2}'
 }
 
 EOF
